@@ -1,0 +1,19 @@
+---
+show-prefix: true
+show-messages-onjoin: true
+force-hub: false
+enable-hub-message: true
+hub-message: §b{PLAYER} §aĐã Dịch Chuyển Tới Hub
+force-spawn: false
+teleport-on-death: 1
+enable-spawn-message: true
+spawn-message: Teleported To {WORLD} Spawn
+enable-aliases: true
+hub:
+  world: eu.mineplex.com - Mineplex New Lobby
+  X: 0.334000
+  "Y": 79.000000
+  Z: -23.680200
+  Yaw: 90
+  Pitch: 26
+...

@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Mon Aug 24 09:30:54 ALMT 2020
+
+Error: syntax error, unexpected '}', expecting ',' or ')'
+File: /plugins/Bau/src/bau/Main
+Line: 505
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[496] 		$inv->setItem(24, Item::get(399, 0, 1)->setCustomName("§eTest"));
+[497] 		$inv->canTakeItem = false;
+[498] 		$inv->setListener(function(Player $p, Item $itemClicked, Item $itemClickedWith, SlotChangeAction $action){
+[499] 		if($itemClicked->Item::get(399, 0, 1)){ 
+[500] 		$inv->onClose($sender->getPlayer());
+[501] 		
+[502] 		
+[503] 		}
+[504] 	}
+[505] 	}
+[506] 	
+[507] 	public function setItens($name, $inv, $num){
+[508] 		$data = $this->getData()->get($name);
+[509] 		foreach($data as $bau => $itens){
+[510] 			$bb = "bau" . $num;
+[511] 			if($bau == $bb){
+[512] 				if($itens !== null){
+[513] 					foreach($itens as $iten => $enchs){
+[514] 						$arr = explode(":", $iten);
+[515] 						$slot = $arr[0];
+
+Backtrace:
+#0 (): spl_autoload_call(string bau\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string bau\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 0 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

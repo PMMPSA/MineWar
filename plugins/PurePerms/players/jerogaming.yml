@@ -1,0 +1,14 @@
+---
+userName: JeroGaming
+group: Guest
+permissions:
+- pchat.command.setsuffix
+- advancedkits.vip1
+- essentials.warps.*
+- feed.command
+- fly.command
+- heal.command
+- vipjoin.use
+worlds: []
+suffix: §e§l❖§cWar§dVip§eI
+...

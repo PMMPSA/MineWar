@@ -1,0 +1,12 @@
+name: TudongAn
+main: AutoFeed\Main
+version: 3.0
+api: [2.0.0]
+author: JeroGaming
+commands:
+  autofeed:
+    description: Turn on/off AutoFeed
+    permission: autofeed.command
+permissions:
+  autofeed.command:
+    default: op

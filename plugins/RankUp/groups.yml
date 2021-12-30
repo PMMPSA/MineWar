@@ -1,0 +1,50 @@
+---
+groups:
+  WarFarmer:
+    entrance:
+    - setgroup {name} WarFarmer
+    exit: []
+    perms: []
+    members: []
+  WarHero:
+    entrance:
+    - setgroup {name} WarHero
+    exit: []
+    perms: []
+    members:
+    - mimi
+  WarHelper:
+    entrance:
+    - setgroup {name} WarKing
+    exit: []
+    perms: []
+    members:
+    - Be_Na
+  WarDonate:
+    entrance:
+    - setgroup {name} WarDonate
+    exit: []
+    perms: []
+    members:
+    - Tieu_An
+  WarVIP:
+    entrance:
+    - setgroup {name} WarVIP
+    exit: []
+    perms: []
+    members:
+      0: Tui_La_Hacker_VN
+      3: nitacsv6
+      4: bakachia
+  WarCreator:
+    entrance:
+    - setgroup {name} WarCreator
+    - givemoney {name} 8000000
+    exit: []
+    perms: []
+    members:
+    - thanhbaoVNTWO
+    - CHT_depzai
+    - anh_binn
+    - NoobSkyBlock
+...

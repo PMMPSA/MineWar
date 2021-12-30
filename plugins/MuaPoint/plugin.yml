@@ -1,0 +1,9 @@
+name: MuaPoint
+version: 1.0
+main: cur1\Main
+author: Phuongaz||Edit by Jero
+api: 2.0.0
+
+commands:
+ muapoint:
+  default: true

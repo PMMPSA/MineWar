@@ -1,0 +1,1 @@
+[{"name":"pvp","flags":{"edit":true,"god":true,"touch":true},"pos1":[37,106,-71],"pos2":[44,118,-79],"level":"PvP","whitelist":["q1_jero"]},{"name":"sb","flags":{"edit":true,"god":false,"touch":true},"pos1":[457,73,-279],"pos2":[453,69,-283],"level":"sblock","whitelist":["q1_jero"]}]

@@ -1,0 +1,10 @@
+name: Trade
+version: 1.0
+main: trade9\Main
+author: Jero
+description: Plugin Muaitem 
+api: [2.0.0, 3.0.0]
+commands:
+ traodoi:
+  usage: /traodoi
+  default: true

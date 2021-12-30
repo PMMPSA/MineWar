@@ -1,0 +1,8 @@
+name: Mana
+version: 2.0.9
+api: 3.0.0, 3.0.1
+main: YTBJero\PT\Main
+commands:
+  upmana:
+    description: "Up Mana!"
+    

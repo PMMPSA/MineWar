@@ -1,0 +1,9 @@
+---
+userName: player(13)
+group: Guest
+permissions:
+- vip1.cmd
+- vip2.cmd
+- vip2.cmd
+worlds: []
+...

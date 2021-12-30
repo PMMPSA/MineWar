@@ -1,0 +1,9 @@
+name: Vip3
+version: 1.0
+main: vip3\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+commands:
+  ❖vip3❖:   
+    description: "Vip3"

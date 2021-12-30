@@ -1,0 +1,302 @@
+---
+128:14:120:Shopee:
+  x: 128
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 1215752192
+  item: 7
+  itemName: Bedrock
+  meta: 0
+  amount: 1
+130:14:120:Shopee:
+  x: 130
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 500
+  item: 17
+  itemName: Oak Wood
+  meta: 0
+  amount: 32
+134:4:122:Shopee:
+  x: 134
+  "y": 4
+  z: 122
+  level: Shopee
+  price: 15000
+  item: 466
+  itemName: Enchanted Golden Apple
+  meta: 0
+  amount: 32
+134:4:123:Shopee:
+  x: 134
+  "y": 4
+  z: 123
+  level: Shopee
+  price: 10000
+  item: 322
+  itemName: Golden Apple
+  meta: 0
+  amount: 32
+134:4:124:Shopee:
+  x: 134
+  "y": 4
+  z: 124
+  level: Shopee
+  price: 5000
+  item: 364
+  itemName: Steak
+  meta: 0
+  amount: 32
+134:4:125:Shopee:
+  x: 134
+  "y": 4
+  z: 125
+  level: Shopee
+  price: 5000
+  item: 424
+  itemName: Cooked Mutton
+  meta: 0
+  amount: 32
+134:4:126:Shopee:
+  x: 134
+  "y": 4
+  z: 126
+  level: Shopee
+  price: 500
+  item: 366
+  itemName: Cooked Chicken
+  meta: 0
+  amount: 32
+114:4:123:Shopee:
+  x: 114
+  "y": 4
+  z: 123
+  level: Shopee
+  price: 10000
+  item: 138
+  itemName: Beacon
+  meta: 0
+  amount: 1
+114:4:125:Shopee:
+  x: 114
+  "y": 4
+  z: 125
+  level: Shopee
+  price: 50000
+  item: 397
+  itemName: Skull
+  meta: 5
+  amount: 1
+115:14:132:Shopee:
+  x: 115
+  "y": 14
+  z: 132
+  level: Shopee
+  price: 100000
+  item: 133
+  itemName: Emerald Block
+  meta: 0
+  amount: 32
+115:14:130:Shopee:
+  x: 115
+  "y": 14
+  z: 130
+  level: Shopee
+  price: 20000
+  item: 173
+  itemName: Coal Block
+  meta: 0
+  amount: 32
+115:14:128:Shopee:
+  x: 115
+  "y": 14
+  z: 128
+  level: Shopee
+  price: 20000
+  item: 152
+  itemName: Block of Redstone
+  meta: 0
+  amount: 32
+115:14:126:Shopee:
+  x: 115
+  "y": 14
+  z: 126
+  level: Shopee
+  price: 40000
+  item: 42
+  itemName: Iron Block
+  meta: 0
+  amount: 32
+115:14:124:Shopee:
+  x: 115
+  "y": 14
+  z: 124
+  level: Shopee
+  price: 50000
+  item: 41
+  itemName: Gold Block
+  meta: 0
+  amount: 32
+115:14:122:Shopee:
+  x: 115
+  "y": 14
+  z: 122
+  level: Shopee
+  price: 300000
+  item: 57
+  itemName: Diamond Block
+  meta: 0
+  amount: 32
+114:14:120:Shopee:
+  x: 114
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 500
+  item: 2
+  itemName: Grass
+  meta: 0
+  amount: 32
+116:14:120:Shopee:
+  x: 116
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 500
+  item: 3
+  itemName: Dirt
+  meta: 0
+  amount: 32
+118:14:120:Shopee:
+  x: 118
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 500
+  item: 110
+  itemName: Mycelium
+  meta: 0
+  amount: 32
+120:14:120:Shopee:
+  x: 120
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 1000
+  item: 1
+  itemName: Stone
+  meta: 0
+  amount: 32
+122:14:120:Shopee:
+  x: 122
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 1000
+  item: 4
+  itemName: Cobblestone
+  meta: 0
+  amount: 32
+124:14:120:Shopee:
+  x: 124
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 1500
+  item: 155
+  itemName: Quartz Block
+  meta: 0
+  amount: 32
+133:14:128:Shopee:
+  x: 133
+  "y": 14
+  z: 128
+  level: Shopee
+  price: 1000
+  item: 98
+  itemName: Stone Bricks
+  meta: 0
+  amount: 32
+126:14:120:Shopee:
+  x: 126
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 1500
+  item: 155
+  itemName: Quartz Pillar
+  meta: 2
+  amount: 32
+134:14:120:Shopee:
+  x: 134
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 500
+  item: 17
+  itemName: Birch Wood
+  meta: 2
+  amount: 32
+133:14:122:Shopee:
+  x: 133
+  "y": 14
+  z: 122
+  level: Shopee
+  price: 500
+  item: 17
+  itemName: Jungle Wood
+  meta: 3
+  amount: 32
+133:14:124:Shopee:
+  x: 133
+  "y": 14
+  z: 124
+  level: Shopee
+  price: 500
+  item: 162
+  itemName: Acacia Wood
+  meta: 0
+  amount: 32
+132:14:120:Shopee:
+  x: 132
+  "y": 14
+  z: 120
+  level: Shopee
+  price: 500
+  item: 17
+  itemName: Spruce Wood
+  meta: 1
+  amount: 32
+133:14:126:Shopee:
+  x: 133
+  "y": 14
+  z: 126
+  level: Shopee
+  price: 500
+  item: 162
+  itemName: Dark Oak Wood
+  meta: 1
+  amount: 32
+133:14:130:Shopee:
+  x: 133
+  "y": 14
+  z: 130
+  level: Shopee
+  price: 500
+  item: 12
+  itemName: Sand
+  meta: 0
+  amount: 32
+165:67:166:boss:
+  x: 165
+  "y": 67
+  z: 166
+  level: boss
+  price: 100
+  item: 1
+  itemName: Stone
+  meta: 0
+  amount: 1
+...

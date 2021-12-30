@@ -1,0 +1,8 @@
+name: Rule
+version: 2.0.1
+api: [2.0.0, 3.0.0]
+main: rule\Main
+author: Jero
+commands:
+  luat:   
+    description: "Xem Luật Server!"

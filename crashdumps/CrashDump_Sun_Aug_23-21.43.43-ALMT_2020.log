@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Sun Aug 23 21:43:43 ALMT 2020
+
+Error: syntax error, unexpected 'public' (T_PUBLIC), expecting end of file
+File: /plugins/MysteryBox_V2/src/mb/main
+Line: 45
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[36] 		$player = $event->getPlayer ();
+[37] 
+[38] 		if ($event->getBlock ()->getId () == Item::TRAPPED_CHEST) {
+[39] 				$player->sendMessage ( "§l§e•§a Đã Mở Rương Thành Công§6!" );				
+[40] 				$event->setCancelled ( true );
+[41] 			}
+[42] 		}
+[43] 	}		
+[44] 	
+[45] 	public function onPlayerInteractEvent(PlayerInteractEvent $ev){
+[46] 		$action = $ev->getAction();
+[47] 		$isChest = $ev->getBlock()->getId()==146;
+[48] 		if($action==1&&$isFeather&&$isChest){
+[49] 			$chest = $ev->getPlayer()->getLevel()->getTile(new Vector3($ev->getBlock()->getX(),$ev->getBlock()->getY(),$ev->getBlock()->getZ()));
+[50] 			if($chest instanceof Chest){
+[51] 				$this->task->chest = $chest;
+[52] 		        $chest->setName("§l§a⚒§e • §bMua§6 VIP §e• §a⚒");
+[53] 				$this->task->player = $ev->getPlayer();
+[54] 				$this->task->t_delay = 3*20;
+[55] 				$this->task->canTakeItem = false;
+
+Backtrace:
+#0 (): spl_autoload_call(string mb\main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string mb\main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\MysteryBox_V2)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\MysteryBox_V2, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 0 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

@@ -1,0 +1,7 @@
+name: HasteBlock
+api: 3.0.0
+version: 1.0
+main: ChangeBlockDrop\Main
+author: JeroGaming
+description: Plugin Add effect Hast For Player
+    

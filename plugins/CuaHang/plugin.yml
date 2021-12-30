@@ -1,0 +1,10 @@
+name: CuaHang
+version: 1.0
+main: CuaHang\Main
+author: Jero, Cur
+editor: Ghast Noob
+api: 2.0.0
+
+commands:
+ chodo:
+  default: true

@@ -1,0 +1,21 @@
+---
+type: block
+message: §6§l Cấm §c Quảng Cáo!
+domain:
+- .me
+- .com
+- .net
+- fore
+- town
+allowed.domain:
+- minewarking.tk
+detect.sign: true
+lines:
+- §c=============
+- §6§l Cám §c Quảng Cáo!
+- §c=============
+- ""
+blocked.cmd:
+- /me
+- /tell
+...

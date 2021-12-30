@@ -1,0 +1,12 @@
+---
+banitem:
+  325: Bucket
+  351: Bone Meal
+protect: lock
+bancmds:
+  /fly: /fly
+  /ai: /ai
+  /gamemode: /gamemode
+  /tp: /tp
+  /gmc: /gmc
+...

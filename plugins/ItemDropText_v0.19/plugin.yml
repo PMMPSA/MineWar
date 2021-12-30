@@ -1,0 +1,4 @@
+name: ItemDropText
+version: 0.19
+api: 2.0.0, 3.0.0
+main: ItemText\Main

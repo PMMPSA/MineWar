@@ -1,0 +1,105 @@
+---
+version: 1.4.0-BETA-04
+default-factions-plugin: FactionsPro
+enable-multiworld-chat: false
+groups:
+  Guest:
+    chat: §l§f[§e{fac_name}§f]§e ♫§d…§e§cωɑɾ§dɷεռ§vɓεɾ§d…§e♫§e{suffix} §r§l§a{display_name}§e⇀§c{msg}
+    nametag: §l§b…•✌§a✪§fMember§a✪§b✌ §f{display_name}
+    worlds: []
+  Admin:
+    chat: §b§l[§e{fac_name}§b] §4§l༊§e•§bAdmin§e•§5༄§e §a{display_name}§c⊹⊱ §b{msg}
+      §c⊰⊹
+    nametag: §l§b[§e{fac_name}§b] §l§a▶§6Admin§a◀ §f{display_name}
+    worlds: []
+  Owner:
+    chat: §b§l[§e{fac_name}§b] §a•§9Owner{suffix}§a•§f{display_name} §c{msg}
+    nametag: §l§b[§e{fac_name}§b] §l§a▶§9Owner§a◀ §f{display_name}
+    worlds: []
+  OP:
+    chat: §9§l•§f{fac_name}§a§l[OP]{suffix} §e{display_name} §6{msg}
+    nametag: f[§e{fac_rank}{fac_name}§e§f]§d ♡§a…§eღ✿❍ρ✿ღ§a…§d♡ §r{display_name}
+    worlds: []
+  Police:
+    chat: §f[§e{fac_rank}{fac_name}§e§f]§e ❄§a…§d❤↬ §bＰｏｌｉｃｅ §d↫❤§a…§e❄{suffix} §r{display_name}§e⇀§e{msg}
+    nametag: §f[§e{fac_rank}{fac_name}§e§f]§e ❄§a…§d❤↬ §bＰｏｌｉｃｅ §d↫❤§a…§e❄ §r{display_name}
+  Helper:
+    chat: §f[§e{fac_rank}{fac_name}§e§f]§b ♡§a…§d✿↬§c …§eＨｅｌｐｅｒ§c… §d↫✿§a…§b♡{suffix}
+      §r{display_name}§e⇀§e{msg}
+    nametag: §f[§e{fac_rank}{fac_name}§e§f]§b ♡§a…§d✿↬§c…§eＨｅｌｐｅｒ§c…§d↫✿§a…§b♡ §r{display_name}
+  Builder:
+    chat: §f[§e{fac_rank}{fac_name}§e§f]§d ♡§a…§b❤↬ §d…§eＢｕｉｌｄｅｒ§d… §b↫❤§a…§d♡ §r{display_name}§e⇀
+      §c{msg}
+    nametag: §l§b[§e{fac_name}§b] §l§a•§bBuilder§a• §f{display_name}
+  Youtuber:
+    chat: §l§a[{fac_name}] ✌§fY❍ʊ§cζʊβℰℜ§a๖ۣۜ §f{display_name} §6•> §b{msg}
+    nametag: §l✌§fY❍ʊ§cζʊβℰℜ§a๖ۣۜ §f{display_name}
+  VipI:
+    chat: §b§l[§e{fac_name}§b] §a§l⚒§d...§cღ§eᏉ§6Ꭵ§eᏢ§b-§4I§cღ§d...§a⚒ §e§l࿌§c{display_name}§e§l࿌
+      §5⚜ §e{msg} §5⚜
+    nametag: §l§b[§e{fac_name}§b] §l§fVip§bI §f{display_name}
+  VipII:
+    nametag: §l§b[§e{fac_name}§b] §l§fVip§bII §f{display_name}
+    chat: §b§l[§e{fac_name}§b] §a§l⚒§d...§cღ§eᏉ§6Ꭵ§eᏢ§b-§4II§cღ§d...§a⚒ §e§l࿌§c{display_name}§e§l࿌
+      §5⚜ §e{msg} §5⚜
+  VipIII:
+    chat: §e»§c☣§1...§6V§bI§aP§r§lIII§r§1...§c☣§e« §a✎[§b{display_name}§a] §1•§6{msg}§1•
+    nametag: §l§b[§e{fac_name}§b] §l§fVip§bIII §f{display_name}
+  VipIV:
+    chat: §f[§e{fac_rank}{fac_name}§e§f]§e§l ❤↬§b ᏠｉᎮ §cIV §e↫❤ §r{display_name} §e⇀§c{msg}
+    nametag: §l§b[§e{fac_name}§b] §l§fVip§bIV §f{display_name}
+  Kmem:
+    chat: §b§l࿇§d...§eღ§6Kɪɴɢ§cMᴇᴍʙᴇʀ§eღ§d...§b࿇ §6❛❜§c{display_name}§6❛❜  §e⊱ §c{msg}
+      §e⊰
+    nametag: §d§l•§e> §aKmem §e<§d•
+  Gay:
+    chat: §5§l•§dTrai Bao Một Thời§5• §c{display_name} §a→ §9{msg} §a←
+    nametag: '&8&l[Gay]&f&r {display_name}'
+  Member:
+    nametag: ' §e》§a...§rƸ§7⇨§rMember§7⇦§rƷ§a...§e《 {display_name}'
+    chat: §e》§a...§rƸ§7⇨§rMember§7⇦§rƷ§a...§e《 §b♦§r{display_name}§b♦ §a≈§r{msg}§a≈
+  TS:
+    nametag: §l§b[§e{fac_name}§b] §e•§fPé §cTiểu Sói§e• §f{display_name} §e•
+    chat: §l§a[{fac_name}] ✌§f๖ۣۜ๖ۣۜPé §c๖ۣۜTĭểυ ๖ۣۜSóĭッ§6๖ۣۜ §f{display_name} §6•>
+      §b{msg} §6<•
+  WarMember:
+    nametag: '&8&l[WarMember]&f&r {display_name}'
+    chat: §a§l[§f§l{fac_name}§a] §d✦§a...§eWarMember§a...§d✦§a{suffix}§b❆§6{display_name}§b❆
+      §c⇝ §b{msg}
+  WarFarmer:
+    nametag: '&8&l[WarFarmer]&f&r {display_name}'
+    chat: '§a§l[§f§l{fac_name}§a] §e❖§a...§bWarFarmer{suffix}§a...§e❖§c•§6[§7§lLevel:
+      §c{prefix}§6]§d✿§6{display_name}§d✿ §c⇝ §b{msg}'
+  WarHero:
+    nametag: '&8&l[WarHero]&f&r {display_name}'
+    chat: §a§l[§f§l{fac_name}§a] §e❖§a...§bWar§cHero§a...§c{suffix}§6]§d✿§6{display_name}§d✿§c⇝
+      §b{msg}
+  WarKing:
+    nametag: '&8&l[WarKing]&f&r {display_name}'
+    chat: §a§l[§f§l{fac_name}§a] §6✠§a...§cᗯᗩᖇ§eᕼEᒪᑭEᖇ§a...§6✠§c{suffix}§e✪§6{display_name}§e✪§c⇝§b{msg}
+  WarDonate:
+    nametag: '&8&l[WarDonate]&f&r {display_name}'
+    chat: §a§l[§f§l{fac_name}§a] §e✻§6...§bWar§aDonate§6...§e✻§c{suffix}§d☣§6{display_name}§d☣§c⇝
+      §b{msg}
+  WarVIP:
+    nametag: '&8&l[WarVIP]&f&r {display_name}'
+    chat: §a•§1{fac_name}§a•§e§l✿§bWar§6V§aI§r§lP§e✿§e{suffix}§b{display_name} §c⇝
+      §e{msg}
+  WarCreator:
+    nametag: '&8&l[WarCreator]&f&r {display_name}'
+    chat: §a•§a{fac_name}§a•§e§l✩§bWar§dCrea§aT§eo§br§e✩§6{suffix}§c【§e{display_name}§c】§6⇨
+      §6{msg}
+  test:
+    chat: S LightningNoobYT Đã Bị Trọng Thương Vì Bị VyNe2k6. Phang Dép Lào Vô Mỏ
+      :vvvv
+    nametag: '&8&l[test]&f&r {display_name}'
+  test2:
+    chat: §e§l•§f LightningNoobYT §eĐã Bơi Trong Tinh Trùng
+    nametag: '&8&l[test2]&f&r {display_name}'
+  Toxic:
+    nametag: '&8&l[Toxic]&f&r {display_name}'
+    chat: '&8&l[Toxic]&f&r {display_name} &7> {msg}'
+  Covid_19:
+    nametag: '&8&l[Covid_19]&f&r {display_name}'
+    chat: '&8&l[Covid_19]&f&r {display_name} &7> {msg}'
+...

@@ -1,0 +1,50 @@
+---
+datetime-format: "H:i:s"
+
+stopserver:
+    custom: true
+    messge: "§c§lMineWar Đã off Hãy Quay Lại Sau Nhé!!!"
+death-magic-message:
+    hide: false
+    custom: true
+    message: "§f§l{PLAYER} §bBị Chết Bằng Một Ma Thuật Nào Đó"
+death-void-message:
+    hide: false
+    custom: true
+    message: "§l§6{PLAYER} §9Đã Bị Lạc Trôi Vào Void Do Nào Đó"
+fullServer:
+  custom: true
+  message: "§l§e{PLAYER}&b, Server Này Đã Đầy &c[{TOTALPLAYERS}/{MAXPLAYERS}]&b!\n&l&dHãy Vào Lại Sau"
+WhitelistedServer:
+  custom: true
+  message: "§c§lMáy Chủ Này Đã Được Đưa Vào §fBảo Trì!"
+OutdatedServer:
+  custom: true
+  message: "§l§cRất Tiếc! Máy Chủ Đã Bị Lỗi!"
+FirstJoin:
+  enable: true
+  message: "§d>§a>§d> §6Chào Mừng §a{PLAYER} §6Đã Tham Gia Máy Chủ lần Đầu §d<§a<§d<"
+Join:
+  hide: false
+  custom: true
+  message: "§f{PLAYER}§ađã tham gia máy chủ §a=^.^="
+WorldChange:
+  enable: false
+Quit:
+  hide: false
+  custom: true
+  message: "§f{PLAYER}§ađã thoát khỏi máy chủ"
+Death:
+  hide: false
+  custom: true
+  kill-message: "§b§l{PLAYER} §dĐã Bị §a{KILLER} §dEndGame"
+  death-default-message: "§l§7[ §6{PLAYER} §7] §bĐã Chết Vì Lí Do Nào Đó §f(ㄒoㄒ)"
+  death-suffocation-message: "§l§7[ §6{PLAYER} §7] §aNghẹt Thở Đến Chết §f(✖﹏✖)"
+  death-fall-message: "§l§7[ §6{PLAYER} §7] §bĐã Bị Chết Vì Rơi Xuống Một Độ Cao Nào Đó §fΣ( ° △ °|||)"
+  death-fire-message: "§7§l[ §6{PLAYER} §7] §6Đã Bị Chết Vì Đứng Quá Lâu Trong Lửa §f( ●︿● )"
+  death-lava-message: "&c§l{PLAYER} §ecố gắng bơi trong dung nham "
+  death-drowning-message: "§l§7[ §6{PLAYER} §7] §bĐã Bị Chết Đuối Dưới Nước §f(๑-﹏-๑"
+  death-explosion-message: "&c{PLAYER} bị chết bởi bom"
+OutdatedClient:
+  custom: true
+  message: "§l§cPhiên Bản §aMinecraft §c Của Bạn Không Tương Thích Với Server Này!\n§7[§b1.1.x§7]"                                                             

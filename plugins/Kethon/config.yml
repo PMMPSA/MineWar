@@ -1,0 +1,39 @@
+---
+# префикс для PureChat
+prefixPP: '§c§l❤'
+
+# сколько нужно заплатить за свадьбу
+# если 0, то бесплатно
+MoneyToMarry: 0
+
+# сколько сердечек спавнить над игроком (команда /marry love)
+# ВНИМАНИЕ
+# ИСПОЛЬЗОВАТЬ С ОСТОРОЖНОСТЬЮ, ТАК КАК НЕСЕТ СОБОЙ НАГРУЗКУ НА СЕРВЕР
+# рекомендуется не больше 15
+hearth: 15
+
+prefix: '§e§l❖§aＭｉｎｅ§6Ｗａｒ§e❖'
+
+broadcast: '§l§e{first}§f Và §e{second}§b Vừa Cưới Nhau Thành Công.§a Chúc bạn trăm năm hạnh phúc!!'
+firstNotEnoughMoney: '§6§l•§b{player} §a không có đủ tiền'
+notEnoughMoney: '§c§l❤§aBạn không có đủ tiền :c'
+alreadyPair: '§aNgười Này Đã Kết Hôn Rồi'
+offline: '§aKhông Thể Tìm Thấy Người Này'
+tp: '§d§lϟ§6 Dịch Chuyến Tới Người Yêu'
+tpToYou: '§d§lϟ§6Người Yêu Của Bạn Đã Dịch Chuyến Tới Bạn'
+exist: '§aBạn Đã Kết Hôn Rồi'
+homeCreate: '§c§l❤ §a§lNhà Chung Của Hai Vợ Chồng Bạn Đã Được Tạo'
+homeTP: '§c§l❤ §a§lBạn được dịch chuyển đến một ngôi nhà chung'
+homeNotExist: '§c§l❤Bạn chưa có một ngôi nhà chung Hãy Xây Dựng Ngôi Nhà Mới Nào ... cài đặt nó làm nhà chung: §d/kethon sethome §e!'
+divorce: '§c§l❤ §aBạn đã ly hôn với {player}'
+leftYou: "§c§l❤§aBạn {player} Đã Ly Hôn Bạn:"
+lonely:  '§l§b☘ §aBạn Đang Độc Thân§b ☘'
+sent: '§l-> §bBạn Đã Gửi Thành Công Cho {player} §f(§aHãy Đợi Người Kia Đồng Ý§f)'
+notExist: '§c§l❤§aBạn không có lời Cầu Hôn đến'
+reject: '§c§l❤§aNgười Chơi Đã Từ Chối Lời Kết Hôn Của Bạn'
+rejected: ' §e§l✚§d Từ chối'
+incoming: ' §l§c♥︎§b Yêu Cầu Kết Hôn§c ♥︎ Từ: §8{player}'
+accept: '§c§l❤ §a Bây giờ bạn và {player} là Một Gia Đình:3 §c♥'
+titleList: '§a Danh sách:'
+wtf: ' Có phải là Bagatiy? Không thể có một người bạn đời'
+...

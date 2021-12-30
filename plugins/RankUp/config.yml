@@ -1,0 +1,37 @@
+# Plugin RankUp Dành Cho PocketMine
+unleash-the-rankupdoesgroups: true
+# Nếu Bạn Đặt Thành false Thì RankUpDoesGroups Sẽ Không Được Tải
+# Điều Này Có Nghĩa Bạn Không Thể Đặt Nó Làm Người Quản Lý GroupManager
+# Rất Khuyến Khích Không Thay Đổi Điều Này
+preferred-economy: false
+# Đặt Nền Kinh Tế Ưa Thích Của Bạn
+# rankup\\economy\\Economy Và rankup\\economy\\PocketMoney Có Sẵn Theo Mặc Định
+# Đặt Thành false Để Tự Động Tải(Chỉ Các Nền Kinh Tế Hổ Trợ Chính Thức Mới Tự Động Tải)
+preferred-groupmanager: "rankup\\permission\\RankUpDoesGroups"
+# Đặt Người Quản Lý Group Ưa Thích Của Bạn
+# rankup\\permission\\RankUpDoesGroups Và rankup\\permission\\PurePerms Có Sẵn
+# RankUpDoesGroups Là Một Siêu Thay Thế Cho Những Người Không Sử Dụng PurePerms
+  
+  
+
+# Xác Định Tất Cả Các Rank Tại Đây:
+ranks:
+  WarFarmer: 400000
+  WarHero: 800000
+  WarHelper: 1400000
+  WarDonate: 1800000
+  WarVIP: 5000000
+  WarCreator: 10000000
+
+
+
+lang:
+  ranked-up-paid: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bBây Giờ Bạn Đã Là:§e %s"
+  ranked-up-free: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bBây Giờ Bạn Đã Là:§e %s"
+  group-add-error-paid: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bRankUP Đã Bị Lỗi Hãy Thông Báo Cho Owner Để Khắc Phục"
+  group-add-error-free: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bRankUP Đã Bị Lỗi Hãy Thông Báo Cho Owner Để Khắc Phục"
+  need-more-money-1: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bBạn Không Đủ Tiền Để Lên Rank Tiếp Theo,Bạn Cần Cày Cuốc Hơn Nhé!"
+  need-more-money-2: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bBạn Thiếu:§e %s §aXu Nữa Để Lên Rank"
+  missing-economy: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bRankUP Đã Bị Lỗi Hãy Thông Báo Cho Owner Để Khắc Phục"
+  have-max-rank: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bBạn Đã Lên Rank Cao Nhất Của MineWar. Cảm Ơn Bạn Đã Tham Gia Máy Chủ!"
+  command-permission-error: "§e§l❖§amᎥᏁᎬ§dᎳᎪᏒ§e❖§bRankUP Đã Bị Lỗi Hãy Thông Báo Cho Owner Để Khắc Phục"

@@ -1,0 +1,9 @@
+name: Vip1
+version: 1.0
+main: vip1\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+commands:
+  ❖vip1❖:   
+    description: "Vip1"

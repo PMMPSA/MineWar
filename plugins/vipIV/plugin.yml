@@ -1,0 +1,9 @@
+name: Vip4
+version: 1.0
+main: vip4\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+commands:
+  ❖vip4❖:   
+    description: "Vip4"

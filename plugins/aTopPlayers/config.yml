@@ -1,0 +1,38 @@
+---
+titleStat: '§b§l❖ §bWar §cOf §e✪§9AMbition§e✪ §9Thống kê người chơi {player}:'
+userNotExist: §b§l❖ §bWar §cOf §e✪§9AMbition§e✪ §eKhông có người chơi
+killTitle: §e§lSố lần §cKilled
+killElement: §6§l{player} - §cĐã xóa sổ §7{value}
+killCount: 5
+deathTitle: §e§lSố lần §cDeath
+deathElement: '§6§l{player} - §cĐã chết §7{value} '
+deathCount: 5
+breakTitle: §e§lĐã loại bỏ §c các khối
+breakElement: §6§l{player} - §cĐã loại Bỏ §7{value}
+breakCount: 5
+placeTitle: '§e§lLần rơi:'
+placeElement: §6§l{player} - §cĐã Ngã §7{value}
+placeCount: 5
+autoUpdate: 300
+coords:
+  kill:
+    x: 90.000000
+    "y": 72.500000
+    z: 276.000000
+    level: sb
+  break:
+    x: 90.000000
+    "y": 72.500000
+    z: 280.000000
+    level: sb
+  place:
+    x: 88.000000
+    "y": 72.500000
+    z: 279.000000
+    level: sb
+  death:
+    x: -1.000000
+    "y": 60.500000
+    z: 1.000000
+    level: mediacraft.com.ar - authtt
+...

@@ -1,0 +1,25 @@
+---
+userName: Heardrecord9562
+group: WarKing
+permissions:
+- sellx2.miner
+- wingangry.command
+- vip4.cmd
+- pchat.command.setsuffix
+- advancedkits.vip4
+- essentials.warps.*
+- feed.command
+- essentials.gamemode.use
+- essentials.gamemode.other
+- pocketmine.command.time
+- command.size
+- size.command
+- autofeed.command
+- pocketmine.command.teleport
+- fly.command
+- heal.command
+- vipjoin.use
+- eternity.command
+worlds: []
+suffix: §e§l❖§dVip§eIV
+...

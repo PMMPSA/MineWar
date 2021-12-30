@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Mon Aug 24 10:12:18 ALMT 2020
+
+Error: syntax error, unexpected 'public' (T_PUBLIC), expecting end of file
+File: /plugins/Bau/src/bau/Main
+Line: 504
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[495] 		}
+[496] 		$inv->setItem(24, Item::get(399, 0, 1)->setCustomName("§eTest"));
+[497] 		$inv->canTakeItem = false;
+[498] 		$sender->sendMessage("cc");
+[499] 		
+[500] 		
+[501] 		}
+[502] 	}
+[503] 	
+[504] 	public function setItens($name, $inv, $num){
+[505] 		$data = $this->getData()->get($name);
+[506] 		foreach($data as $bau => $itens){
+[507] 			$bb = "bau" . $num;
+[508] 			if($bau == $bb){
+[509] 				if($itens !== null){
+[510] 					foreach($itens as $iten => $enchs){
+[511] 						$arr = explode(":", $iten);
+[512] 						$slot = $arr[0];
+[513] 						$id = $arr[1];
+[514] 						$dmg = $arr[2];
+
+Backtrace:
+#0 (): spl_autoload_call(string bau\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string bau\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 1 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

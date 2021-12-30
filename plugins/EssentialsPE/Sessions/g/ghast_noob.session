@@ -1,0 +1,16 @@
+{
+    "isAFK": false,
+    "isGod": true,
+    "homes": [],
+    "isMuted": false,
+    "mutedUntil": null,
+    "nick": null,
+    "ptCommands": {
+        "280": "theodoi",
+        "332": "fly"
+    },
+    "ptChatMacros": false,
+    "isPvPEnabled": true,
+    "isUnlimitedEnabled": false,
+    "isVanished": false
+}

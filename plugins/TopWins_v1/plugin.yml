@@ -1,0 +1,5 @@
+name: TopWins
+author: yHwinT
+version: 1.0
+main: topwins\Main
+api: 2.0.0

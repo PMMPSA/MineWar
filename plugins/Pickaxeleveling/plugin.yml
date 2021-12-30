@@ -1,0 +1,15 @@
+name: cuplving
+version: 1.0
+main: piclving\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+
+
+commands:
+  cupleveling:
+    description: "Đập Block Vĩnh Viễn Trong 15p"
+    permission: pickaxelv.bat
+permissions:
+  pickaxelv.bat:
+    default: true

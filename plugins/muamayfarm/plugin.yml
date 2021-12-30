@@ -1,0 +1,9 @@
+name: MayFarm
+api: 2.0.0
+version: 1.0
+author: Jero
+editor: Ghast Noob
+main: mayfarm\Main
+commands:
+ muamayfarm:
+  default: true

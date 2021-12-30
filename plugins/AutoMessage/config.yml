@@ -1,0 +1,39 @@
+---
+prefix: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖"
+suffix: ""
+time: 50
+sendmessage-format: "&b{PREFIX} {SUFFIX} &a{SENDER}&e>&f {MESSAGE}"
+datetime-format: "H:i:s"
+broadcast-enabled: true
+messages:
+ - "{PREFIX}&f §6Vào Website Để Biết Các Thông Tin Tại:§ahttps://minewarvn.cf"
+ - "{PREFIX}&f §6Website Mods Minecraft Việt Nam:§ahttps://hmod.vn/"
+ - "{PREFIX}&f §6Không Cheat/Hack Trong Máy Chủ Cần Gì Có Thể Liên Hệ Helper Hoặc Police"
+ - "{PREFIX}&f §6Shop Chính Thức Của YTB.JeroGaming Nơi Bán Các acc VIP: shopjerovn.tk"
+ - "{PREFIX}&f §6Hãy Là Người Có Văn Hóa Và Tế Nhị"
+ - "{PREFIX}&f §6Mở Giao Diện Shop Bằng Lệnh §b/muado"
+ - "{PREFIX}&f §6Dùng Lệnh §e/luat §6Để Xem Nội Quy Của Máy Chủ"
+ - "{PREFIX}&f §6Nếu Ai Thấy §cHack/Cheat §6Thì Hãy Thông Báo Cho §cPolice §bHoặc §6Helper Hoặc Tố cáo Cho admin về Email:hotro.minewar@gmail.com"
+ - "{PREFIX}&f §6Hãy §eBỏ Phiếu §6Cho Máy Chủ Rồi Liên Hệ CHo Admin Qua Email để Nhận quà!"
+ - "{PREFIX}&f §6Bỏ Phiếu Cho Máy Chủ Để Nhận Quà Tại: https://bom.to/bophieumw"
+ - "{PREFIX}&f §6Tham Gia Group Để Biết Các Cập Nhật Mới Tại:§ehttps://bom.to/minewargroup"
+ - "{PREFIX}&f §6Mở Giao Diện Hướng Dẫn Cách Chơi Bằng Cách Nhập §c/huongdan"
+ - "{PREFIX}&f §6Không Cheat/Hack Trong Máy Chủ Cần Gì Có Thể Liên Hệ Helper Hoặc Police"
+ - "{PREFIX}&f §6Hãy Chăm Chỉ Cày Cuốc Để Nhận Các Vật Phẩm Vip"
+ - "{PREFIX}&f §6Hãy Là Người Có Văn Hóa Và Tế Nhị"
+ - "{PREFIX}&f §6Mở Giao Diện Shop Bằng Lệnh §b/muado"
+ - "{PREFIX}&f §6Dùng Lệnh §e/luat §6Để Xem Nội Quy Của Máy Chủ"
+ - "{PREFIX}&f §6Nếu Ai Thấy §cHack/Cheat §6Thì Hãy Thông Báo Cho §cPolice §bHoặc §6Helper"
+ - "{PREFIX}&f §6Bỏ Phiếu Cho Máy Chủ Để Nhận Quà Tại: https://bom.to/bophieumw"
+ - "{PREFIX}&f §6Tham Gia Group Để Biết Các Cập Nhật Mới Tại:§ehttps://bom.to/minewargroup"
+popup-time: 10
+popup-duration: 5
+sendpopup-format: "&a{SENDER}&e>>&f {MESSAGE}"
+popup-broadcast-enabled: true
+popups:
+ - "§e§lCần Nhớ: §f Bỏ Phiếu Nhận Được 1 Kim Cương Mỗi Ngày Nhé!"
+ - "§e§lMùa Hiện Tại Về Vũ Trụ"
+ - "§e§lChúc M.n Chơi vui vẻ :)"
+ - "§e§lVui Lòng Không Tab Qua App Khác Để Không bị Crash Game"
+ - "§e§lHãy Chia sẻ Cho Mọi Người Để Máy Chủ Đông Hơn Nhé!"
+...

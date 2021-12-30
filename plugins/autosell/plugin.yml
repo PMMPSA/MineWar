@@ -1,0 +1,6 @@
+name: AutoSell
+version: 1.0
+main: Autosell\Main
+author: Jero, Cur
+editor: Ghast Noob
+api: 2.0.0

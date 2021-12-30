@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Sun Aug 23 21:57:00 ALMT 2020
+
+Error: syntax error, unexpected '}', expecting end of file
+File: /plugins/Bau/src/bau/Main
+Line: 105
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[96] 					$sender->addWindow($inv);
+[97] 					$this->inv[$name] = $inv;
+[98] 					$this->all[$name] = "on";
+[99] 					$inv->setItem(0,102,1);
+[100] 							$inv->canTakeItem = false;
+[101] 							$sender->sendMessage("cc");
+[102] 				}
+[103] 			}
+[104] 		}
+[105] 	}
+[106] 	
+[107] 	public function onTransaction(InventoryTransactionEvent $e){
+[108] 		$transactions = $e->getTransaction()->getTransactions();
+[109] 		$p = $e->getTransaction()->getPlayer();
+[110] 		if(isset($this->chest[$p->getName()])){
+[111] 			return true;
+[112] 		}
+[113] 		if(isset($this->all[$p->getName()]) and $this->all[$p->getName()] == "off"){
+[114] 			$e->setCancelled();
+[115] 		}
+
+Backtrace:
+#0 (): spl_autoload_call(string bau\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string bau\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 1 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

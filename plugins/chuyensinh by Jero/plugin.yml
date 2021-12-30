@@ -1,0 +1,11 @@
+name: Taisinh
+author: Ghast Noob [Edit by NCD, Master Jero, CurlliestDrake66]
+version: 2.0
+api: 2.0.0
+main: Reincarnated\Main
+
+commands:
+  taisinh:
+     default: true
+  topchuyensinh:
+     default: true

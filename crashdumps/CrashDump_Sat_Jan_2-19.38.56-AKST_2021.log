@@ -1,0 +1,74 @@
+MeLoNyPE Crash Dump Sat Jan 2 19:38:56 AKST 2021
+
+Error: Declaration of Phuongaz\Main::onCommand(pocketmine\command\CommandSender $sender, pocketmine\command\Command $cmd, string $label, array $args): bool must be compatible with pocketmine\command\CommandExecutor::onCommand(pocketmine\command\CommandSender $sender, pocketmine\command\Command $command, $label, array $args)
+File: /plugins/BuyKit-Phar/src/Phuongaz/Main
+Line: 17
+Type: E_COMPILE_ERROR
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[8] use pocketmine\plugin\PluginBase;
+[9] use pocketmine\Server;
+[10] use pocketmine\item\enchantment\Enchantment;
+[11] use pocketmine\item\Item;
+[12] use pocketmine\Player;
+[13] use pocketmine\utils\TextFormat as TF;
+[14] use pocketmine\command\CommandReader;
+[15] use pocketmine\command\CommandExecuter;
+[16] use pocketmine\command\ConsoleCommandSender;
+[17] class Main extends PluginBase implements Listener{
+[18] 	public $tag = "§l§d[§eBUY§bKIT§d]§r ";
+[19] 	public function onEnable(){
+[20] 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+[21] 		$this->eco = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
+[22] 		$this->getLogger()->info(TF::GREEN . "§d§l====================\n§l§eBUY§a KIT§6 BY§b Phuongaz \n§d§l====================");
+[23] 	}
+[24] 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args): bool {
+[25] 		if ($cmd->getName() == "muakit"){
+[26] 		$sender->sendMessage($this->tag."§c /muakit list để xem danh sách KIT");
+[27] 		if(isset($args[0])){
+
+Backtrace:
+#0 (): pocketmine\Server->crashDump(boolean)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT WIN-J2AHE6178QR 6.3 build 9600 (Windows Server 2012 R2 Standard Edition) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 3 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:
+AdvancedKits 5.0b1 by luca28pet for API(s) 2.0.0
+AntiSpam 1.3 by xBeastMode for API(s) 2.0.0
+AutoInv 1.0.0 by JackNoordhuis for API(s) 1.0.0, 2.0.0, 3.0.0
+AutoMessage 1.16 by SoiCon for API(s) 3.0.0-ALPHA7
+BuyFly_MCPE14 1 by MCPE14 for API(s) 2.0.0
+SClearLagg 1 by Sergey_Dertan for API(s) 1.8.0
+CustomAlerts 1.0 by EvolSoft for API(s) 1.9.0
+EconomyAPI 2.0.9 by onebone for API(s) 2.0.0
+EssentialsPE 2.0.0 by LegendsOfMCPE Team for API(s) 3.0.0-ALPHA6
+Healer 1 by LYT[Edit By Jero] for API(s) 2.0.0, 3.0.0, 3.0.0-ALPHA6
+iProtector 3.1a by LDX for API(s) 1.9.0
+KeepInventory 1.0 by KhoaGamingPro for API(s) 3.0.0
+KillChat 1.0.2.MOD by Array for API(s) 1.9.0, 2.0.0
+MagicWE 0.2.4 by thebigsmileXD for API(s) 1.13.0, 2.0.0
+ManyWorlds 2.0.3 by aliuly for API(s) 2.0.0, 1.13.0
+NoAD 1.0.1 by Vaivez66 for API(s) 1.12.0
+PurePerms 1.2.2 by 64FF00 for API(s) 1.12.0
+ServerAuth 2.12 by EvolSoft for API(s) 1.11.0
+SlapperRotation 1.0.1 by jojoe77777 for API(s) 2.0.0
+TimeCommander 2.1 by LDX for API(s) 1.0.0, 2.0.0
+Vanish 1.0.4 by MasterJero for API(s) 2.0.9
+WorldProtect 2.2.0 by aliuly for API(s) 1.10.0, 1.12.0
+FrameKeeper 1.1 by KhoaGamingPro for API(s) 3.0.0, 3.0.1, 3.0.0-ALPHA1, 3.0.0-ALPHA2, 3.0.0-ALPHA3, 3.0.0-ALPHA3, 3.0.0-ALPHA4, 3.0.0-ALPHA5, 3.0.0-ALPHA6
+TudongAn 3 by JeroGaming for API(s) 2.0.0
+AutoSell 1 by Jero, Cur for API(s) 2.0.0
+AutoSmelt 1.0 by SavionLegendZzz for API(s) 1.12.0
+ATM 1 by Jero Gaming for API(s) 2.0.0
+Blood 1.1.0 by NashanPlaysYT for API(s) 3.4.0, 3.3.0, 3.2.0, 3.1.0, 3.9.0, 3.9.1
+BuyFix 1 by phuongaz for API(s) 3.0.0

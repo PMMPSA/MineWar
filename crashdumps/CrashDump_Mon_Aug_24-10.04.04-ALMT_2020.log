@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Mon Aug 24 10:04:04 ALMT 2020
+
+Error: syntax error, unexpected ';', expecting '{'
+File: /plugins/chestgui/src/chestgui/Main
+Line: 105
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[96] 	 {
+[97] 		 if($cmd->getName() === "kitgui"){
+[98] 			 $count = $this->countBaus($name);
+[99] 						if(1 <= $count){
+[100] 							$size = $this->getBauSize($name, 1);
+[101] 							$inv = new ChestInv($sender, $size, "§aBaú " . 1);
+[102] 							$inv->readonly();
+[103] 							$menu = $inv->getInventory();
+[104] 							$menu->addItem(Item::get(Item::DIAMOND));
+[105] 							$inv->setListener(function(Player $p, Item $itemClicked, Item $itemClickedWith, SlotChangeAction $action);
+[106] 							if$itemClicked->getId() === Item::DIAMOND){
+[107] 								$menu = $p->getInventory();
+[108] 								$armor = $p->getArmorInventory();
+[109] 								$menu->addItem(Item::get(Item::DIAMOND_SWORD));
+[110] 								$armor->setHelmet(Item::get(Item::DIAMOND_HELMET));
+[111] 								$p->removeWindow($action->getInventory());
+[112] 								$p->sendMessage("Thành Công");
+[113] 							}
+[114] 						});
+[115] 						return true;
+
+Backtrace:
+#0 (): spl_autoload_call(string chestgui\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string chestgui\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\chestgui)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\chestgui, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 0 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

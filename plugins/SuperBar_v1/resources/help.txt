@@ -1,0 +1,3 @@
+Bạn có thể tạo thêm các Addons cho SuperBar tại đây
+Nó phải có đuôi định dạng là '.php' (kod.php). Bạn có thể xem mẫu mặc định ở blank.php
+Sau khi tạo xong bạn chèm kod.php vào trong thư mục addons nhé

@@ -1,0 +1,11 @@
+name: Giftcode
+main: giftcode\Giftcode
+author: Curdepzai:v
+version: 2.0.0
+api: 2.0.0
+commands: 
+  xaicode:
+   description: redeem giftcode
+  taocode:
+    description: generate giftcode(OP only)
+    default: op

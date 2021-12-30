@@ -1,0 +1,42 @@
+MeLoNyPE Crash Dump Wed Aug 26 09:55:50 ALMT 2020
+
+Error: Call to undefined method pocketmine\entity\Entity::init()
+File: /src/pocketmine/Server
+Line: 1780
+Type: notice
+
+Code:
+[1771] 			$this->network->setName($this->getMotd());
+[1772] 
+[1773] 			$this->logger->info($this->getLanguage()->translateString("pocketmine.server.license", [$this->getName()]));
+[1774] 
+[1775] 			Timings::init();
+[1776] 
+[1777] 			$this->consoleSender = new ConsoleCommandSender();
+[1778] 			$this->commandMap = new SimpleCommandMap($this);
+[1779] 
+[1780] 			Entity::init();
+[1781] 			Tile::init();
+[1782] 			InventoryType::init();
+[1783] 			Block::init();
+[1784] 			Enchantment::init();
+[1785] 			Item::init();
+[1786] 			Biome::init();
+[1787] 			Effect::init();
+[1788] 			Attribute::init();
+[1789] 			EnchantmentLevelTable::init();
+[1790] 			Color::init();
+
+Backtrace:
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 0 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

@@ -1,0 +1,16 @@
+name: BAN
+author: uEpicøL
+version: "1.0"
+main: ban\MainClass
+api: [1.14.0, 2.0.0, 2.1.0, 3.0.0, 3.0.0-ALPHA7]
+commands:
+    phat:
+        description: "Punir um jogador do servidor"
+        permission: punir.cmd
+        aliases: [p]
+    kickkkkkkkkkkkkkkkkkkkkkkkkkkkkkk:
+        description: kiiiiiickkkkkkkk cmd
+    unban:
+        description: "Remover o banimento de um jogador do servidor"
+        permission: unban.cmd
+        aliases: [u]

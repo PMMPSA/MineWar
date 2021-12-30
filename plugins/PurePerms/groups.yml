@@ -1,0 +1,455 @@
+---
+Guest:
+  alias: gst
+  inheritance: []
+  permissions:
+  - -pocketmine.command.me
+  - essentials.kit
+  - essentials.kit.other
+  - essentials.warps.*
+  - notp.command
+  - pchat.colored.format
+  - pchat.colored.nametag
+  - pocketmine.command.list
+  - pocketmine.command.tranferserver
+  - pocketmine.command.transfer
+  - pocketmine.command.transferserver
+  - pocketmine.command.warp
+  - pperms.command.ppinfo
+  - sell.all
+  - sell.hand
+  - warp.command
+  worlds: []
+  isDefault: true
+Admin:
+  alias: adm
+  inheritance:
+  - Guest
+  permissions:
+  - commands.enchant.maxLevel
+  - danhhieu.use
+  - essentials.clearinventory
+  - essentials.clearinventory.other
+  - essentials.clearinventory.use
+  - essentials.gamemode
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.nick
+  - essentials.nick.other
+  - essentials.nick.use
+  - essentials.warp
+  - essentials.warp.other
+  - essentials.warp.use
+  - essentials.warps.*
+  - fly.command
+  - pets
+  - pocketmine.broadcast
+  - pocketmine.command.ban
+  - pocketmine.command.gamemode
+  - pocketmine.command.give
+  - pocketmine.command.kick
+  - pocketmine.command.kill
+  - pocketmine.command.say
+  - pocketmine.command.size
+  - pocketmine.command.teleport
+  - pocketmine.command.time
+  - ptkcustomenchants.command.ce
+  - ptkcustomenchants.command.ce.enchant
+  - sell.all
+  - sell.hand
+  - size.command
+  - snoop.command
+  - theodoi.command
+  - vipjoin.use
+  worlds: []
+Owner:
+  alias: owr
+  inheritance:
+  - Admin
+  permissions:
+  - essentials
+  - pocketmine.command
+  - pperms.command
+  - sell hand
+  - sell.all
+  worlds: []
+OP:
+  alias: op
+  inheritance: []
+  permissions:
+  - '*'
+  - command.givecup
+  - essentials.nick
+  - essentials.nick.other
+  - essentials.nick.use
+  - essentials.warps.*
+  - fly.command
+  - notp.command
+  - pocketmine.command.teleport
+  - sell.all
+  - setcoin.cmd
+  - setcoin.command
+  - size.command
+  - size.permission
+  - slapper.command
+  - slapper.remove
+  - theodoi.command
+  - we.command.admin
+  - we.command.wand
+  - we.commands.admin
+  - we.commands.pos
+  - we.commands.wand
+  worlds: []
+Police:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - ban.command
+  - blazinfly.command
+  - blazinvanish.command
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.warps.*
+  - fly.command
+  - notp.command
+  - pocketmine.ban.command
+  - pocketmine.command.ban
+  - pocketmine.command.gamemode
+  - pocketmine.command.kick
+  - pocketmine.command.notp
+  - pocketmine.command.say
+  - pocketmine.command.teleport
+  - pocketmine.command.time
+  - pocketmine.gamemode.command
+  - pocketmine.say.command
+  - pocketmine.time.command
+  - say.command
+  - sell.all
+  - sell.hand
+  - theodoi.command
+  worlds: []
+Helper:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - blazinfly.command
+  - blazinvanish.command
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.nick
+  - essentials.nick.other
+  - essentials.nick.use
+  - essentials.warps.*
+  - fly.command
+  - khodo.command1
+  - nick.command
+  - pocketmine.command.gamemode
+  - pocketmine.command.teleport
+  - pocketmine.command.time
+  - sell.all
+  - sell.hand
+  worlds: []
+Builder:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - command.tp
+  - command.wand
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.warp.*
+  - essentials.warps.*
+  - feed.command
+  - fly.command
+  - gmc.command
+  - gms.command
+  - heal.command
+  - notp.command
+  - pocketmine.command.gamemode
+  - pocketmine.command.teleport
+  - sell.all
+  - sell.hand
+  - tp.command
+  - wand.command
+  - we.commands.admin
+  - we.commands.copy
+  - we.commands.cyl
+  - we.commands.flip
+  - we.commands.hcyl
+  - we.commands.paste
+  - we.commands.pos
+  - we.commands.redo
+  - we.commands.replace
+  - we.commands.schem
+  - we.commands.set
+  - we.commands.undo
+  - we.commands.wand
+  worlds: []
+Youtuber:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofeed.command
+  - command.teleport
+  - essentials.command.use
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.warps.*
+  - fly.command
+  - kingkong.command
+  - notp.command
+  - notp.commanr
+  - pocketmine.command.gamemode
+  - pocketmine.command.teleport
+  - sell.all
+  - sell.hand
+  - teleport.command
+  worlds: []
+VipI:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - advancedkits.vip1
+  - blazinfly.command
+  - dioconsole
+  - essentials.warps.*
+  - feed.command
+  - fly.command
+  - heal.command
+  - sell.all
+  - sell.hand
+  - thu.command
+  - vip1.use
+  - vipjoin.use
+  worlds: []
+VipII:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - "2"
+  - blazinfly.command
+  - choden.command
+  - command.size
+  - essentials.warps.*
+  - feed.command
+  - fly.command
+  - heal.command
+  - pocketmine.command.size
+  - pocketmine.size.command
+  - sell.all
+  - sell.hand
+  - size.command
+  - vipjoin.use
+  worlds: []
+VipIII:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - advancedkits.vip3
+  - command.givecup
+  - command.tp
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.warps.*
+  - feed.command
+  - fly.command
+  - gamemode.command
+  - givecup.command
+  - heal.command
+  - notp.command
+  - pocketmine.command.givecup
+  - pocketmine.command.size
+  - pocketmine.command.teleport
+  - pocketmine.command.time
+  - pocketmine.command.tp
+  - pocketmine.command.weather
+  - sell.all
+  - sell.hand
+  - size.command
+  - tp.command
+  - vipjoin.use
+  worlds: []
+Kmem:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - feed.command
+  - fly.command
+  - sell.all
+  - sell.hand
+  worlds: []
+Gay:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+Member:
+  alias: ""
+  isDefault: false
+  inheritance: []
+  permissions:
+  - crate.key.create
+  - cratekeys.chest.create
+  worlds: []
+TS:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofix.cmd
+  - blazinvanish.command
+  - command.gamemode
+  - essentials.gamemode.other
+  - essentials.gamemode.use
+  - essentials.warp
+  - essentials.warp.other
+  - essentials.warp.pvp
+  - essentials.warp.use
+  - essentials.warps.*
+  - gamemode.command
+  - ketsat.command
+  - khodo.command
+  - khodo.command.1
+  - khodo.command.2
+  - khodo.command1
+  - khodo.command2
+  - kickk.cmd
+  - kickk.command
+  - pocketmine.command.gamemode
+  - pocketmine.command.teleport
+  - pocketmine.command.time
+  - pocketmine.gamemode.command
+  - sell.all
+  - sell.hand
+  - vanish.command
+  worlds: []
+WarMember:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - essentials.warps.*
+  - fly.command
+  - sell.all
+  - sell.hand
+  worlds: []
+WarFarmer:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autosell.command
+  - essentials.warps.*
+  - fly.command
+  - sell.all
+  - sell.hand
+  - skillminer.eternity
+  worlds: []
+WarHero:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofeed.command
+  - autosell.command
+  - essentials.warps.*
+  - fly.command
+  - pocketmine.command.teleport
+  - sell.all
+  - sell.hand
+  worlds: []
+WarKing:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofeed.command
+  - autosell.command
+  - essentials.warps.*
+  - fly.command
+  - pocketmine.command.teleport
+  - sell.all
+  - sell.hand
+  - size.command
+  worlds: []
+WarDonate:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofeed.command
+  - autosell.command
+  - essentials.warps.*
+  - fly.command
+  - pocketmine.command.teleport
+  - sell.all
+  - sell.hand
+  - size.command
+  worlds: []
+WarVIP:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofeed.command
+  - autosell.command
+  - essentials.vanish.command
+  - essentials.warps.*
+  - fly.command
+  - khodo.command1
+  - pocketmine.command.teleport
+  - sell.all
+  - sell.hand
+  worlds: []
+WarMarrior:
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+WarLord:
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+WarCreator:
+  isDefault: false
+  inheritance: []
+  permissions:
+  - autofeed.command
+  - autofix.cmd
+  - autosell.command
+  - essentials.gamemode.use
+  - essentials.vanish.command
+  - essentials.warps.*
+  - fly.command
+  - khodo.command1
+  - khodo.command2
+  - pocketmine.command.teleport
+  - pocketmine.command.time
+  - sell.all
+  - sell.hand
+  - size.command
+  worlds: []
+test:
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+test2:
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+Toxic:
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+Covid_19:
+  isDefault: false
+  inheritance: []
+  permissions: []
+  worlds: []
+...

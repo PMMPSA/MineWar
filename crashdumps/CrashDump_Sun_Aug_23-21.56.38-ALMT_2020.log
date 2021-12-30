@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Sun Aug 23 21:56:38 ALMT 2020
+
+Error: syntax error, unexpected 'public' (T_PUBLIC), expecting end of file
+File: /plugins/Bau/src/bau/Main
+Line: 45
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[36] 	public $icones = ["1" => ["279", "278", "276", "277", "293"], "2" => ["310", "311", "312", "313", "0"], "3" => ["15", "56", "16", "14", "73"], "4" => ["116", "145", "54", "379", "58"], "5" => ["52", "121", "17", "46", "47"]];
+[37] 	public $baus = ["§e§l" => 1, "§aBaú 2" => 2, "§aBaú 3" => 3, "§aBaú 4" => 4, "§aBaú 5" => 5];
+[38] 	public $bb = [];
+[39] 	
+[40] 	public function onEnable(){
+[41] 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+[42] 		}
+[43] 	}
+[44] 	
+[45] 	public function onQuit(PlayerQuitEvent $e){
+[46] 		$p = $e->getPlayer();
+[47] 		$name = $p->getName();
+[48] 		if(isset($this->chest[$name])){
+[49] 			unset($this->chest[$name]);
+[50] 			unset($this->bau[$name]);
+[51] 		}
+[52] 		if(isset($this->inv[$name])){
+[53] 			unset($this->inv[$name]);
+[54] 		}
+[55] 		if(isset($this->icone[$name])){
+
+Backtrace:
+#0 (): spl_autoload_call(string bau\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string bau\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 2 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

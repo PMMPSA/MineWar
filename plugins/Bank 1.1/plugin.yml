@@ -1,0 +1,9 @@
+name: ATM
+version: 1.0
+main: bank\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+commands:
+  atm:   
+    description: "ATM WOAM"

@@ -1,0 +1,44 @@
+groups:
+  WarMember:
+    entrance:
+    - setgroup {name} WarMember
+    exit: []
+    perms: []
+    members: []
+  WarFarmer:
+    entrance:
+    - setgroup {name} WarFarmer
+    exit: []
+    perms: []
+    members: []
+  WarHero:
+    entrance:
+    - setgroup {name} WarHero
+    exit: []
+    perms: []
+    members: []
+  WarKing:
+    entrance:
+    - setgroup {name} WarKing
+    exit: []
+    perms: []
+    members: []
+  WarDonate:
+    entrance:
+    - setgroup {name} WarDonate
+    exit: []
+    perms: []
+    members: []
+  WarVIP:
+    entrance:
+    - setgroup {name} WarVIP
+    exit: []
+    perms: []
+    members: []
+  WarCreator:
+    entrance:
+    - setgroup {name} WarCreator
+    - givemoney {name} 8000000
+    exit: []
+    perms: []
+    members:

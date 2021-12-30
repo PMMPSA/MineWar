@@ -1,0 +1,7 @@
+---
+userName: player(2)
+group: Guest
+permissions:
+- pickaxe.use
+worlds: []
+...

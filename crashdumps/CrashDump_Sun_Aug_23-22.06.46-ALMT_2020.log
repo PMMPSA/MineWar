@@ -1,0 +1,50 @@
+MeLoNyPE Crash Dump Sun Aug 23 22:06:46 ALMT 2020
+
+Error: syntax error, unexpected ')'
+File: /plugins/Bau/src/bau/Main
+Line: 497
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[488] 	
+[489] 	public function setMenu($inv, $sender){
+[490] 		$name = $sender->getName();
+[491] 		$count = $this->countBaus($name);
+[492] 		for($i = 1; $i <= $count; $i++){
+[493] 			$id = $this->getIcone($name, $i);
+[494] 			$item = Item::get($id, 0, 1)->setCustomName("§aBaú $i");
+[495] 			$inv->setItem($i, $item);
+[496] 		}
+[497] 		$inv->setItem(24, Item::get(340, 0, 1)->setCustomName("§eTest"));));
+[498] 		$inv->canTakeItem = false;
+[499] 		$sender->sendMessage("cc");
+[500] 		
+[501] 	}
+[502] 	
+[503] 	public function setItens($name, $inv, $num){
+[504] 		$data = $this->getData()->get($name);
+[505] 		foreach($data as $bau => $itens){
+[506] 			$bb = "bau" . $num;
+[507] 			if($bau == $bb){
+
+Backtrace:
+#0 (): spl_autoload_call(string bau\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string bau\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\Bau, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 2 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:

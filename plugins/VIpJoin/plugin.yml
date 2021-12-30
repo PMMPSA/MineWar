@@ -1,0 +1,5 @@
+name: VipJoinMessage
+main: Hender\VipJoin\VipJoin
+api: 2.0.0
+version: 2.0
+author: Hender Plugner [Edit By CurliestDrake66]

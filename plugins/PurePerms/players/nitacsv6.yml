@@ -1,0 +1,26 @@
+---
+userName: nitacsv6
+group: Helper
+permissions:
+- eternity.command
+- sellx2.miner
+- vip4.cmd
+- pchat.command.setsuffix
+- advancedkits.vip4
+- essentials.warps.*
+- feed.command
+- essentials.gamemode.use
+- essentials.gamemode.other
+- pocketmine.command.time
+- command.size
+- size.command
+- autofeed.command
+- pocketmine.command.teleport
+- fly.command
+- heal.command
+- vipjoin.use
+- pchat.command.setsuffix
+- wingangry.command
+worlds: []
+suffix: §e§l❖§dVip§eIV
+...

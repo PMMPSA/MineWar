@@ -1,0 +1,257 @@
+---
+vip1:
+  #items. name and enchantments are optional.
+  #if damage is not specified, 0 will be used
+  #if count is not specified, 1 will be used
+  items:
+  - id: 276
+    damage: 19
+    count: 1
+    name: "§b§l♦ §6Vip§aI §b♦"
+    enchantment:
+      #name: level
+      sharpness: 10
+      knockback: 5
+  #helmet
+  #optional. you can remove this if you don't want a helmet
+  helmet:
+    id: 310
+    name: "§b§l♦ §6Vip§aI §b♦"
+    enchantment:
+      protection: 10
+      fire_protection: 10
+  #chestplate
+  #optional. you can remove this if you don't want a chestplate
+  chestplate:
+    id: 311
+    name: "§b§l♦ §6Vip§aI §b♦"
+    enchantment:
+      protection: 10
+      fire_protection: 10
+  #leggings
+  #optional. you can remove this if you don't want leggings
+  leggings:
+    id: 312
+    name: "§b§l♦ §6Vip§aI §b♦"
+    enchantment:
+      protection: 10
+      fire_protection: 10
+  #boots
+  #optional. you can remove this if you don't want boots
+  boots:
+    id: 313
+    name: "§b§l♦ §6Vip§aI §b♦"
+    enchantment:
+      protection: 10
+      fire_protection: 10
+  #cool down time.
+  #when a player gets this kit, he will not be able to get this again until the cool down ends
+  #this is optional. you can remove this if you don't want a cooldown
+  cooldown:
+    hours: 168
+    minutes: 0
+  #commands to execute when a player gets a kit
+  #use {player} to specify the player name
+  #optional. you can remove this if you don't want any command to be executed
+  commands:
+  - "tell {player} §aBạn đã nhận được Kit Vip1"
+  #effects to give to the player
+  #optional. you can remove this if you don't want effects to come with this kit
+  effects: []
+  #if you do not use pureperms, use 'worlds' to specify in which worlds you want this kit to be used
+  worlds: []
+  #if you do not use pureperms, use 'users' to specify which players will be able to get this kit
+  users: []
+  
+vip2:
+  #items. name and enchantments are optional.
+  #if damage is not specified, 0 will be used
+  #if count is not specified, 1 will be used
+  items:
+  - id: 276
+    damage: 23
+    count: 1
+    name: "§b§l❁ §6Vip§aII §b❁"
+    enchantment:
+      #name: level
+      sharpness: 15
+      knockback: 7
+  #helmet
+  #optional. you can remove this if you don't want a helmet
+  helmet:
+    id: 310
+    name: "§b§l❁ §6Vip§aII §b❁"
+    enchantment:
+      protection: 15
+      fire_protection: 15
+  #chestplate
+  #optional. you can remove this if you don't want a chestplate
+  chestplate:
+    id: 311
+    name: "§b§l❁ §6Vip§aII §b❁"
+    enchantment:
+      protection: 15
+      fire_protection: 15
+  #leggings
+  #optional. you can remove this if you don't want leggings
+  leggings:
+    id: 312
+    name: "§b§l❁ §6Vip§aII §b❁"
+    enchantment:
+      protection: 15
+      fire_protection: 15
+  #boots
+  #optional. you can remove this if you don't want boots
+  boots:
+    id: 313
+    name: "§b§l❁ §6Vip§aII §b❁"
+    enchantment:
+      protection: 15
+      fire_protection: 15
+  #cool down time.
+  #when a player gets this kit, he will not be able to get this again until the cool down ends
+  #this is optional. you can remove this if you don't want a cooldown
+  cooldown:
+    hours: 336
+    minutes: 0
+  #commands to execute when a player gets a kit
+  #use {player} to specify the player name
+  #optional. you can remove this if you don't want any command to be executed
+  commands:
+  - "tell {player} §aBạn đã nhận được Kit Vip2"
+  #effects to give to the player
+  #optional. you can remove this if you don't want effects to come with this kit
+  effects: []
+  #if you do not use pureperms, use 'worlds' to specify in which worlds you want this kit to be used
+  worlds: []
+  #if you do not use pureperms, use 'users' to specify which players will be able to get this kit
+  users: []
+  
+vip3:
+  #items. name and enchantments are optional.
+  #if damage is not specified, 0 will be used
+  #if count is not specified, 1 will be used
+  items:
+  - id: 276
+    damage: 30
+    count: 1
+    name: "§b§l❁ §6Vip§aIII §b❁"
+    enchantment:
+      #name: level
+      sharpness: 15
+      knockback: 7
+  #helmet
+  #optional. you can remove this if you don't want a helmet
+  helmet:
+    id: 310
+    name: "§b§l❁ §6Vip§bIII §b❁"
+    enchantment:
+      protection: 30
+      fire_protection: 30
+  #chestplate
+  #optional. you can remove this if you don't want a chestplate
+  chestplate:
+    id: 311
+    name: "§b§l❁ §6Vip§bIII §b❁"
+    enchantment:
+      protection: 30
+      fire_protection: 30
+  #leggings
+  #optional. you can remove this if you don't want leggings
+  leggings:
+    id: 312
+    name: "§b§l❁ §6Vip§bIII §b❁"
+    enchantment:
+      protection: 30
+      fire_protection: 30
+  #boots
+  #optional. you can remove this if you don't want boots
+  boots:
+    id: 313
+    name: "§b§l❁ §6Vip§bIII §b❁"
+    enchantment:
+      protection: 30
+      fire_protection: 30
+  #cool down time.
+  #when a player gets this kit, he will not be able to get this again until the cool down ends
+  #this is optional. you can remove this if you don't want a cooldown
+  cooldown:
+    hours: 744
+    minutes: 0
+  #commands to execute when a player gets a kit
+  #use {player} to specify the player name
+  #optional. you can remove this if you don't want any command to be executed
+  commands:
+  - "tell {player} §aBạn đã nhận được Kit Vip3"
+  #effects to give to the player
+  #optional. you can remove this if you don't want effects to come with this kit
+  effects: []
+  #if you do not use pureperms, use 'worlds' to specify in which worlds you want this kit to be used
+  worlds: []
+  #if you do not use pureperms, use 'users' to specify which players will be able to get this kit
+  users: []
+  
+vip4:
+  #items. name and enchantments are optional.
+  #if damage is not specified, 0 will be used
+  #if count is not specified, 1 will be used
+  items:
+  - id: 276
+    damage: 100
+    count: 1
+    name: "§b§l❖ §6Vip§eIV §b❖"
+    enchantment:
+      #name: level
+      sharpness: 150
+      knockback: 100
+  #helmet
+  #optional. you can remove this if you don't want a helmet
+  helmet:
+    id: 310
+    name: "§b§l❖ §6Vip§eIV §b❖"
+    enchantment:
+      protection: 500
+      fire_protection: 300
+  #chestplate
+  #optional. you can remove this if you don't want a chestplate
+  chestplate:
+    id: 311
+    name: "§b§l❖ §6Vip§eIV §b❖"
+    enchantment:
+      protection: 500
+      fire_protection: 300
+  #leggings
+  #optional. you can remove this if you don't want leggings
+  leggings:
+    id: 312
+    name: "§b§l❖ §6Vip§eIV §b❖"
+    enchantment:
+      protection: 500
+      fire_protection: 300
+  #boots
+  #optional. you can remove this if you don't want boots
+  boots:
+    id: 313
+    name: "§b§l❖ §6Vip§eIV §b❖"
+    enchantment:
+      protection: 500
+      fire_protection: 300
+  #cool down time.
+  #when a player gets this kit, he will not be able to get this again until the cool down ends
+  #this is optional. you can remove this if you don't want a cooldown
+  cooldown:
+    hours: 1488
+    minutes: 0
+  #commands to execute when a player gets a kit
+  #use {player} to specify the player name
+  #optional. you can remove this if you don't want any command to be executed
+  commands:
+  - "tell {player} §aBạn đã nhận được Kit Vip4"
+  #effects to give to the player
+  #optional. you can remove this if you don't want effects to come with this kit
+  effects: []
+  #if you do not use pureperms, use 'worlds' to specify in which worlds you want this kit to be used
+  worlds: []
+  #if you do not use pureperms, use 'users' to specify which players will be able to get this kit
+  users: []
+...

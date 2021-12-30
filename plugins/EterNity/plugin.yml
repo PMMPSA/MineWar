@@ -1,0 +1,15 @@
+name: Eternity
+version: 1.0
+main: eternity\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+
+
+commands:
+  eternity:
+    description: "Đập Block Vĩnh Viễn Trong 30 Giây"
+    permission: eternity.command
+permissions:
+  eternity.command:
+    default: true

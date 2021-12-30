@@ -1,0 +1,24 @@
+﻿name: SuperBar
+version: 1.0
+main: ThanhTuan\Main
+author: ThanhTuan
+youtube: http://bit.do/thanhtuan
+load: POSTWORLD
+api: [1.0.0, 2.0.0, 2.1.0, 3.0.0, 3.0.0-ALPHA1, 3.0.0-ALPHA2, 3.0.0-ALPHA9]
+
+commands:
+ superbar:
+  description: "SuperBar lệnh"
+  aliases: [sbp, supbar, sbar]
+  permission: superbar
+
+permissions:
+ superbar:
+  default: true
+  description: "Quyền sử dụng lệnh"
+ superbar.help:
+  default: op
+  description: "Quyền xem help"
+ superbar.reload:
+  default: op
+  description: "Quyền reload"

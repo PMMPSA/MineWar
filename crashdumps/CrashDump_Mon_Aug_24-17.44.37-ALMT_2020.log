@@ -1,0 +1,53 @@
+MeLoNyPE Crash Dump Mon Aug 24 17:44:37 ALMT 2020
+
+Error: syntax error, unexpected end of file
+File: /plugins/EnchantBook_v2/src/Enchant/Main
+Line: 132
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[123] 					}
+[124] 					$p->takeXp(70);
+[125] 					$in = $p->getInventory();
+[126]                     $livro = Item::get(340, 30, 1);
+[127]                     $livro->setCustomName("§r§aLivro avancado§r");
+[128]                     $in->addItem($livro);
+[129]                     $p->sendMessage("§a O livro foi comprado com sucesso!");
+[130] 					return true;
+[131] 				}
+[132] 			}
+[133] 
+[134] 
+[135] 
+[136] 
+[137] 
+[138] 
+[139] 
+[140] 
+[141] 
+[142] 
+
+Backtrace:
+#0 (): spl_autoload_call(string Enchant\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string Enchant\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\EnchantBook_v2)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\EnchantBook_v2, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 1 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:
+ManyWorlds 2.0.3 by aliuly for API(s) 2.0.0, 1.13.0
+BauWin 1 by yHwinT for API(s) 2.0.0
+BedWars 1 by uSony for API(s) 2.0.0

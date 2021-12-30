@@ -1,0 +1,30 @@
+---
+#time in seconds a player has to wait to send a message again
+time: 1
+#max warnings a player will receive until they receive a block type
+max_warnings: 2
+#warn player each time they spam
+warning_message: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §e✬§c Bạn Đang Chat Quá Nhanh Vui Lòng Chat Chậm lại §bCảnh Báo:&6 %warns%"
+#What type of block do you want?
+#Types: message, mute, kick, ban, ban-ip
+block_type: kick
+#how much time should the player be muted (in seconds)
+mute_time: 60
+#message when player gets muted
+mute_message: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §e✬§c Bạn Đã Bị Tắt Tiếng§a Bởi §b§l❖ §bQuản Trị Viên §c Vì Gửi Thư Rác"
+#message when player is still muted
+muted_message: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §e•§b Bạn Vẫn Đang Bị Tắt Tiếng!"
+un-muted_message: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §d• §a Bạn Đã Được Bật Chat, Vui Lòng Không Gửi Thư Rác Nếu Không Bạn Sẽ Bị tắt chat forever"
+#Reason why player was kicked
+#%player% = players name
+kick_reason: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §6• §c Bạn Đá Bị Đá Khỏi Server, Lý Do: Spamming."
+#Reason why player was banned
+#%player% = players name
+ban_reason: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §6• §a꧁§c Bạn Đã Bị Banned, Lý Do: Spamming. §a꧂"
+#Reason why player was ip-banned
+#%player% = players name
+ip_ban_reason: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §6• §a꧁§c Bạn Đã Bị Banned IP, Lý Do: Spamming. §a꧂"
+#message that will be sent if player is spamming
+#%player% = players name
+message: "§e§l❖§1Ｖ§6ＣＲＡＦＴ§e❖ §6• §a꧁§cHãy Để Người Khác Trò Chuyện§a꧂"
+...

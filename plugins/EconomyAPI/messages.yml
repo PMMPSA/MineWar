@@ -1,0 +1,59 @@
+---
+language: en
+commands:
+  mymoney:
+    usage: /mymoney
+    description: Shows your money
+  topmoney:
+    usage: /topmoney [page]
+    description: Shows top money of this server
+  setmoney:
+    usage: /setmoney <player> <amount>
+    description: Set money of player
+  seemoney:
+    usage: /seemoney <player>
+    description: Shows money of player
+  givemoney:
+    usage: /givemoney <player> <amount>
+    description: Gives money to player
+  takemoney:
+    usage: /takemoney <player> <amount>
+    description: Takes money from player
+  pay:
+    usage: /pay <player> <amount>
+    description: Pays money to player
+  setlang:
+    usage: /setlang <ccTLD>
+    description: Set your language
+  mystatus:
+    usage: /mystatus
+    description: Shows your status of money
+language-set: §r§l[§r§b$§r§l]§r§a Tiếng %1 đã được chỉnh bởi onebone
+request-cancelled: §r§l[§r§b$§r§l]§r§c Yêu cầu của bạn đã được bỏ!
+player-not-connected: §r§l[§r§b$§r§l]§r§c Người chơi %1 Không online
+player-never-connected: §r§l[§r§b$§r§l]§r§c Người chơi %1 chưa bao giờ vào máy chủ!
+topmoney-tag: §a==========§eTOP Xu§a==========§r§e->Số trang§a %1§e/§b%2
+topmoney-format: '§a[%1] §b%2: §e%3'
+pay-failed: §r§l[§r§b$§r§l]§r§c Không gửi được Xu
+pay-success: §r§l[§r§b$§r§l]§r§a Đã gửi§e %MONETARY_UNIT%%1§a đến %2.
+money-paid: §r§l[§r§b$§r§l]§r§a Người chơi %1 gửi cho bạn§e %MONETARY_UNIT%%2.
+takemoney-must-be-number: §r§l[§r§b$§r§l]§r§c Phải là số
+takemoney-invalid-number: §r§l[§r§b$§r§l]§r§c Không xác định số Xu
+takemoney-player-lack-of-money: §r§l[§r§bXu§r§l]§r§a Người chơi %1§c không đủ§e %MONETARY_UNIT%%2
+takeXu-Xu-taken: §r§l[§r§b$§r§l]§r§e Bạn đã bị lấy đi %MONETARY_UNIT%%1
+takemoney-took-money: §r§l[§r§b$§r§l]§r§a Đã lấy §e%MONETARY_UNIT%%2§a từ %1
+takemoney-failed: §r§l[§r§b$§r§l]§r§c Không lấy được Xu
+givemoney-must-be-number: §r§l[§r§b$§r§l]§r§c Phải là số
+givemoney-invalid-number: §r§l[§r§b$§r§l]§r§c Không xác định được số Xu
+givemoney-money-given: §r§l[§r§b$§r§l]§r§a Bạn đã được nhận§e %MONETARY_UNIT%%1
+givemoney-gave-money: §r§l[§r§b$§r§l]§r§a Đưa§e %MONETARY_UNIT%%1§a đến %2
+seemoney-seemoney: §r§l[§r§b$§r§l]§r§a Số Xu của người chơi %1:§e %2
+setmoney-setmoney: §r§l[§r§b$§r§l]§r§a Số Xu của người chơi %1 đã được chỉnh thành§e
+  %MONETARY_UNIT%%2
+setmoney-set: §r§l[§r§b$§r§l]§r§a Xu của bạn đã được chỉnh thành§e %MONETARY_UNIT%%1
+setmoney-failed: §r§l[§r§b$§r§l]§r§c Lỗi! Không chỉnh được Xu
+setmoney-invalid-number: §r§l[§r§b$§r§l]§r§c %MONETARY_UNIT%%1 phải là số
+mymoney-mymoney: §r§l[§r§b$§r§l]§r§a Xu của bạn:§e %MONETARY_UNIT%%1
+mystatus-show: §r§l[§r§b$§r§l]§r§a Tình trạng Xu của bạn:§e %1%
+takemoney-money-taken: Your %MONETARY_UNIT%%1 have been taken
+...

@@ -1,0 +1,57 @@
+MeLoNyPE Crash Dump Tue Aug 25 13:46:19 ALMT 2020
+
+Error: syntax error, unexpected '(', expecting ',' or ')'
+File: /plugins/chuyensinh by Jero/src/Reincarnated/Main
+Line: 46
+Type: notice
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+
+Code:
+[37] $rand = mt_rand(1, 100);
+[38]  if ($this->myReincarnated($p) > 1){ 
+[39] switch($rand){ 
+[40] case 5: 
+[41] $p->sendMessage("§b§l❖ §b6War §cOf §e✪§9AMbition§e✪ §6Bạn Đã Nhận Được§a".$a."§6$ Khi Mine(Xu Này Từ Nguồn Rebirh Của Bạn)");
+[42] $this->money->addMoney($p, $a);
+[43] break;
+[44] case 15:
+[45] $p->sendMessage("§b§l❖ §b6War §cOf §e✪§9AMbition§e✪ §6Bạn Đã Nhận Được§a1§6Tim Khi Mine(Xu Này Từ Nguồn Rebirh Của Bạn)");
+[46] $p->setMaxHealth(20 + 1($p));
+[47] case 20:
+[48] $p->sendMessage("§b§l❖ §b6War §cOf §e✪§9AMbition§e✪ §6Bạn Đã Nhận Được§a".$b."§6$ Khi Mine(Xu Này Từ Nguồn Rebirh Của Bạn)");
+[49] $this->money->addMoney($p, $a);
+[50] break;
+[51] case 50:
+[52] $p->sendMessage("§b§l❖ §b6War §cOf §e✪§9AMbition§e✪ §6Bạn Đã Nhận Được§a".$b."§6$ Khi Mine(Xu Này Từ Nguồn Rebirh Của Bạn)");
+[53] $this->money->addMoney($p, $b);
+[54] break;
+[55] case 70:
+[56] $this->coin->addPoint($p, $c);
+
+Backtrace:
+#0 (): spl_autoload_call(string Reincarnated\Main)
+#1 /src/pocketmine/plugin/FolderPluginLoader(76): class_exists(string Reincarnated\Main, boolean 1)
+#2 /src/pocketmine/plugin/PluginManager(159): pocketmine\plugin\FolderPluginLoader->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\chuyensinh by Jero)
+#3 /src/pocketmine/plugin/PluginManager(346): pocketmine\plugin\PluginManager->loadPlugin(string C:\Users\NK\Music\MineWar VN\plugins\chuyensinh by Jero, array Array())
+#4 /src/pocketmine/Server(1812): pocketmine\plugin\PluginManager->loadPlugins(string C:\Users\NK\Music\MineWar VN\plugins\)
+#5 /src/pocketmine/PocketMine(470): pocketmine\Server->__construct(BaseClassLoader object, pocketmine\utils\MainLogger object, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\, string C:\Users\NK\Music\MineWar VN\plugins\)
+
+Genisys version: 0000000000000000000000000000000000000000 [Protocol 113; API 3.0.1]
+uname -a: Windows NT LAPTOP-JERO 10.0 build 18362 (Windows 10) AMD64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : WINNT, win
+
+Server uptime: 3 seconds
+Number of loaded worlds: 0
+Players online: 0/20
+
+Loaded plugins:
+BossBarAPI 2.2.2 by XenialDan for API(s) 2.0.0, 2.1.0, 3.0.0-ALHA1, 3.0.0-ALPHA2
+EssentialsPE 2.0.0 by LegendsOfMCPE Team for API(s) 3.0.0-ALPHA6
+ManyWorlds 2.0.3 by aliuly for API(s) 2.0.0, 1.13.0
+ATM 1 by Jero Gaming for API(s) 2.0.0
+BuyFix 1 by phuongaz for API(s) 3.0.0
+BuyKIT 1 by Phuongaz for API(s) 2.0.0
+Bar 1 by LocVlogTM for API(s) 1.0.0, 2.0.0, 2.1.0, 3.0.0, 3.0.0-ALPHA1, 3.0.0-ALPHA2, 3.0.0-ALPHA3, 3.0.0-ALPHA4

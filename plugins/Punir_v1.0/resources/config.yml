@@ -1,0 +1,30 @@
+
+
+# Para banir um jogador use /punir [player] [motivo], para remover o banimento use /unban [player] ou remova pelo players-banidos.txt
+
+# permissões: punir.cmd , unban.cmd
+
+---
+
+# Comandos de outros banimentos e removimento de ban exemplo /ban /ban-ip /jsonban /gban /banir /bancid /bancidbyname /pardon /pardon-ip /pardoncid /desbanir , coloque true para banir, é super recomendável para usar esse plugin ou haverá alguns conflitos
+banir.comandos.inuteis: true
+
+som.de.bigorna.ao.banir: true
+
+bloquear.ip.ao.ser.banido: false
+
+player.pre.login.banido.mensagem: "§aBạn không thể chơi trên máy chủ vì bạn đã bị khóa acc"
+
+player.kickado.mensagem: "§l§b! §r§cNgười chơi thân mến§l§b!§r§f\n§cBạn đã bị nhân viên cấm: §b{staff}\n§cLý do cấm §b{motivo}\n§cBạn sẽ không thể chơi trên máy chủ nữa! "
+
+player.banido.broadcast: "§7{player} §dbị cấm bởi nhân viên §7{staff}\n§dlý do §b{motivo}"
+
+player.já.banido.mensagem: "§cO người chơi §7{player} §cđã bị cấm khỏi máy chủ!"
+
+player.nunca.entrado.mensagem: "§7{player} §ckhông bao giờ kết nối với máy chủ!"
+
+player.desbanido.broadcast: "§6O staff §7{staff} §6gỡ bỏ lệnh cấm người chơi §7{player}"
+
+player.não.banido.mensagem: "§7{player} §ckhông bị cấm, không cần phải làm như vậy!"
+
+...

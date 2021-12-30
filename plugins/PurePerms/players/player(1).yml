@@ -1,0 +1,17 @@
+---
+userName: player(1)
+group: Guest
+permissions:
+- vip2.cmd
+- eternity.cmd
+- vip1.cmd
+- vip2.cmd
+- vip1.cmd
+- vip1.cmd
+- vip1.cmd
+- vip1.cmd
+- pickaxe.use
+- vip2.cmd
+- vip1.cmd
+worlds: []
+...

@@ -1,0 +1,9 @@
+#编辑这个配置文件在你的 MCPE 服务器添加全局资源.
+
+#是否强制玩家接受材质包.
+force_resources: true
+resource_stack:
+  - R1.zip
+  - R2.zip
+ #例如
+ # - 苦力怕材质.zip

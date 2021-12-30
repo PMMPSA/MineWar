@@ -1,0 +1,9 @@
+name: Vip2
+version: 1.0
+main: vip2\Main
+author: Jero Gaming
+editor: Trống
+api: 2.0.0
+commands:
+  ❖vip2❖:   
+    description: "Vip2"
