@@ -1,0 +1,142 @@
+name: ServerPoint
+main: Point\Point
+version: 1.1
+api: [2.0.0]
+load: POSTWORLD
+author: Tradottoby IlKannibale<?php
+
+namespace point;
+
+use pocketmine\plugin\PluginBase;
+use pocketmine\command\Command;
+use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\command\CommandSender;
+use pocketmine\tile\Sign;
+use pocketmine\network\protocol\ExplodePacket;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\scheduler\PluginTask;
+use pocketmine\utils\TextFormat;
+use pocketmine\event\Listener;
+use pocketmine\entity\Entity;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\item\Item;
+use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\network\protocol\InteractPacket;
+use pocketmine\network\protocol\PlayerActionPacket;
+use pocketmine\level\Level;
+use pocketmine\block\Block;
+use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\permission\ServerOperator;
+use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\inventory\PlayerInventory;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\utils\Config;
+use pocketmine\event\player\PlayerCommandPreprocessEvent;
+use pocketmine\event\server\ServerCommandEvent;
+use pocketmine\event\server\RemoteServerCommandEvent;
+use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDeathEvent;
+use pocketmine\item\enchantment\Enchantment;
+use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\math\Vector3;
+use pocketmine\entity\Effect;
+use pocketmine\level\Position;
+use pocketmine\level\sound\AnvilUseSound;
+use pocketmine\level\Explosion;
+use pocketmine\event\entity\EntityRegainHealthEvent;
+use pocketmine\level\particle\DestroyBlockParticle;
+use pocketmine\event\player\PlayerKickEvent;
+use pocketmine\event\block\SignChangeEvent;
+use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
+
+
+
+//メモ書き
+//これから追加する機能
+
+//world指定
+//音
+//パーティクル
+
+
+class point extends PluginBase implements Listener{
+
+	public function onEnable(){
+        $server = Server::getInstance();
+        $plugin = "kitplugin";
+        $this->getServer()->getPluginManager()->registerEvents($this,$this);
+        if(!file_exists($this->getDataFolder())){@mkdir($this->getDataFolder(), 0744, true);}
+        $this->X = new Config($this->getDataFolder() . "pos1.yml", Config::YAML);
+        $this->Y = new Config($this->getDataFolder() . "pos2.yml", Config::YAML);
+        $this->Z = new Config($this->getDataFolder() . "pos3.yml", Config::YAML);
+	}
+
+	public function point(PlayerInteractEvent $event){
+    $player = $event->getPlayer();
+    $signs = $event->getPlayer()->getLevel()->getTile($event->getBlock());
+    if($signs instanceof Sign){
+    $sign = $signs->getText();
+
+    if($sign[0]=="§a[§l§bPoint§r§a]"){
+    $name = $player->getName();
+    $xpos=$player->getX();
+    $ypos=$player->getY();
+    $zpos=$player->getZ();
+    $this->X->set($name, $xpos);
+    $this->X->save();
+    $this->Y->set($name, $ypos);
+    $this->Y->save();
+    $this->Z->set($name, $zpos);
+    $this->Z->save();
+    $player->sendMessage("§aSalvataggio!!");
+    return;
+    	}
+    if($sign[0]=="§a[§l§bWarp§r§a]"){
+    $name = $player->getName();
+    $Xwarp = $this->X->get($name);
+	$Ywarp = $this->Y->get($name);
+    $Zwarp = $this->Z->get($name);
+    $player->teleport(new Vector3($Xwarp,$Ywarp,$Zwarp));
+    $player->sendMessage("§bTeleport...");
+    return;
+    	}
+    }
+    }
+
+	public function onSignChange(SignChangeEvent $event){
+    $result = $event->getLine(0);
+
+    if($result == "cpch"){
+    $player = $event->getPlayer();
+    if(!$player->isOp()){
+      $player->sendMessage("§cnon hai permessi");
+      return;
+    }
+    $player->sendMessage("§bha creato point");
+    $event->setLine(0, "§a[§l§bPoint§r§a]");
+    $event->setLine(1, "§6Complimenti!!");
+    $event->setLine(2, "§dSignPoint");
+    $event->setLine(3, "§bCheckPoint!!!!!!!!");
+    return;
+}
+   	if($result == "cpwp"){
+    	$player = $event->getPlayer();
+    	if(!$player->isOp()){
+      	$player->sendMessage("§cnon hai permessi");
+      	return;
+    }
+    }
+    $player->sendMessage("§bha creato nuovo start");
+    $event->setLine(0, "§a[§l§bWarp§r§a]");
+    $event->setLine(1, "§6point!!");
+    $event->setLine(2, "§dSignPoint");
+    $event->setLine(3, "§barriva al checkpoint!!");
+    return;
+}
+}

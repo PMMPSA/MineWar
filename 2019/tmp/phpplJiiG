@@ -1,0 +1,249 @@
+name: SClearLagg
+main: Sergey_Dertan\SClearLagg\SClearLaggMainFolder\SClearLaggMain
+api: 1.8.0
+load: STARTUP
+author: Sergey_Dertan
+description: "Limpieza automatica de Lagg"
+version: 1
+commands:
+ scl:
+  permissions: scl.scl
+  description: "Ayuda ClearLagg"
+permissions:
+ sclearlagg:
+  description: "Derecho maximo"
+  default: op
+  children:
+   scl.scl:
+    default: op
+    description: "Реrmitir el uso de el commando /scl"<?php
+namespace Sergey_Dertan\SClearLagg\SClearLaggMainFolder;
+
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
+use Sergey_Dertan\SClearLagg\Command\SClearLaggCommandExecutor;
+use Sergey_Dertan\SClearLagg\Entity\EntityManager;
+use pocketmine\utils\TextFormat as F;
+use Sergey_Dertan\SClearLagg\Task\TaskCreator;
+
+/**
+ * Class SClearLaggMain
+ * @package Sergey_Dertan\SClearLagg\SClearLaggMainFolder
+ */
+class SClearLaggMain extends PluginBase
+{
+    /**
+     * @var SClearLaggMain
+     */
+    private static $instance;
+    public $config;
+    /**
+     * @var \Sergey_Dertan\SClearLagg\Entity\EntityManager
+     */
+    private $entityManager;
+
+    function __construct()
+    {
+        self::$instance = $this;
+        $this->entityManager = new EntityManager($this);
+    }
+
+    /**
+     * @return SClearLaggMain
+     */
+    static function getInstance()
+    {
+        return self::$instance;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    function onEnable()
+    {
+        @mkdir($this->getDataFolder());
+        $this->config = new Config($this->getDataFolder() . "Config.yml", Config::YAML, array(
+            "Clear-msg" => "Se elimino @count de lagg",
+            "PreClear-msg" => "En un minuto de eliminara el lagg",
+            "Clear-time" => 240
+        ));
+        new TaskCreator();
+        $this->getLogger()->info(F::GREEN . "ClearLagg" . $this->getDescription()->getVersion() . " от Sergey Dertanз загружен");
+    }
+
+    /**
+     * @param CommandSender $s
+     * @param Command $cmd
+     * @param string $label
+     * @param array $args
+     * @return bool|SClearLaggCommandExecutor
+     */
+    function onCommand(CommandSender $s, Command $cmd, $label, array $args)
+    {
+        return new SClearLaggCommandExecutor($s, $cmd, $args);
+    }
+
+    function onDisable()
+    {
+        $this->config->save();
+        $this->getLogger()->info(F::RED . "ClearLagg" . $this->getDescription()->getVersion() . "ClearLagg");
+    }
+}<?php
+namespace Sergey_Dertan\SClearLagg\Entity;
+
+use pocketmine\entity\Creature;
+use pocketmine\entity\Human;
+use pocketmine\Server;
+use Sergey_Dertan\SClearLagg\SClearLaggMainFolder\SClearLaggMain;
+
+/*
+ * Класс в котором будет происходить удаление объектов
+ */
+
+/**
+ * Class EntityManager
+ * @package Sergey_Dertan\SClearLagg\Entity
+ */
+class EntityManager
+{
+    function __construct(SClearLaggMain $main)
+    {
+        $this->main = $main;
+    }
+
+    /**
+     * @return SClearLaggMain
+     */
+    function getMain()
+    {
+        return $this->main;
+    }
+    /**
+     * @return int
+     */
+    function removeEntities()
+    {
+        $entitiesCount = 0; //Кол-во удаленных объектов
+        foreach (Server::getInstance()->getLevels() as $level) { //Будут удалены все объекты во всеъ мирах
+            foreach ($level->getEntities() as $entity) { //Перебор всех объектов
+                if (!$entity instanceof Creature and !$entity instanceof Human) { //Проверка на то,не является ли объект экземпляром игрока или моба
+                    $entity->close(); //Удалние объекта
+                    $entitiesCount++; //Прибавляем 1 к кол-ву удаленных объектов
+                }
+            }
+        }
+        return $entitiesCount; //Возвращаем кол-во удаленных объектов
+    }
+
+    /**
+     * @return int
+     */
+    function removeMobs()
+    {
+        $mobsCount = 0;
+        foreach (Server::getInstance()->getLevels() as $level) {
+            foreach ($level->getEntities() as $entity) {
+                if ($entity instanceof Creature && !($entity instanceof Human)) {
+                    $entity->kill();
+                    $mobsCount++;
+                }
+            }
+        }
+        return $mobsCount;
+    }
+}<?php
+namespace Sergey_Dertan\SClearLagg\Task;
+
+use pocketmine\Server;
+use Sergey_Dertan\SClearLagg\SClearLaggMainFolder\SClearLaggMain;
+
+/**
+ * Class TaskCreator
+ * @package Sergey_Dertan\SClearLagg\Task
+ */
+class TaskCreator
+{
+    function __construct()
+    {
+        $this->main = SClearLaggMain::getInstance();
+        $this->createTasks($this->main);
+    }
+
+    /**
+     * @param SClearLaggMain $main
+     */
+    private function createTasks(SClearLaggMain $main)
+    {
+        Server::getInstance()->getScheduler()->scheduleRepeatingTask(new ClearTask($main), $main->config->getAll()["Clear-time"] * 20);
+        Server::getInstance()->getScheduler()->scheduleRepeatingTask(new MsgTask($main), ($main->config->getAll()["Clear-time"] - 60) * 20);
+    }
+}<?php
+namespace Sergey_Dertan\SClearLagg\Task;
+
+use pocketmine\utils\TextFormat as F;
+use pocketmine\scheduler\PluginTask;
+use pocketmine\Server;
+use Sergey_Dertan\SClearLagg\SClearLaggMainFolder\SClearLaggMain;
+
+/**
+ * Class ClearTask
+ * @package Sergey_Dertan\SClearLagg\Task
+ */
+class ClearTask extends PluginTask
+{
+    /**
+     * @param SClearLaggMain $main
+     */
+    function __construct(SClearLaggMain $main)
+    {
+        parent::__construct($main);
+        $this->plugin = $main;
+    }
+
+    /**
+     * @param $currentTick
+     */
+    function onRun($currentTick)
+    {
+        $msg = SClearLaggMain::getInstance()->config->get("Clear-msg");
+        $msg = str_replace("@count", SClearLaggMain::getInstance()->getEntityManager()->removeEntities(), $msg);
+        Server::getInstance()->broadcastMessage(F::GREEN . $msg);
+    }
+}<?php
+namespace Sergey_Dertan\SClearLagg\Task;
+
+use pocketmine\scheduler\PluginTask;
+use pocketmine\Server;
+use pocketmine\utils\TextFormat as F;
+use Sergey_Dertan\SClearLagg\SClearLaggMainFolder\SClearLaggMain;
+
+/**
+ * Class MsgTask
+ * @package Sergey_Dertan\SClearLagg\Task
+ */
+class MsgTask extends PluginTask
+{
+    /**
+     * @param SClearLaggMain $main
+     */
+    function __construct(SClearLaggMain $main)
+    {
+        parent::__construct($main);
+        $this->plugin = $main;
+    }
+
+    /**
+     * @param $currentTick
+     */
+    function onRun($currentTick)
+    {
+        Server::getInstance()->broadcastMessage(F::GREEN . SClearLaggMain::getInstance()->config->get("PreClear-msg"));
+    }
+}

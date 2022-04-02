@@ -1,0 +1,19 @@
+﻿name: VIPD_ARO
+main: vip\main
+version: 1.0.0
+api: [1.12.0]
+load: POSTWORLD
+author: MyL Team
+commands:
+ setvip:
+  description: "Myl VIP command"
+  permission: setvip.command.setvip
+permissions:
+ setvip.command.help:
+  default: op
+  description: VIP command
+ setvip.command.vip:
+  default: op
+ setvip.command.remove:
+  default: op
+  description: VIP command remove VIP

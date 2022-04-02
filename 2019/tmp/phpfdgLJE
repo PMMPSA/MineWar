@@ -1,0 +1,2465 @@
+name: ServerAuth
+main: ServerAuth\ServerAuth
+version: "2.13"
+api: [1.11.0]
+load: STARTUP
+author: EvolSoft
+description: The most advanced authentication plugin for PocketMine-MP
+website: http://www.evolsoft.tk
+
+commands:
+ serverauth:
+  aliases: [sa, sauth, auth]
+  description: ServerAuth Commands.
+ register:
+  aliases: [reg]
+  description: Allows registering an account
+  permission: serverauth.register
+ login:
+  description: Allows logging into an account
+  permission: serverauth.login
+ changepassword:
+  aliases: [ch, chp, chpass]
+  description: Allows changing account password
+  permission: serverauth.changepassword
+ unregister:
+  description: Allows unregistering an account
+  permission: serverauth.unregister
+ logout:
+  description: Allows to do the log out
+  permission: serverauth.logout
+
+permissions:
+ serverauth:
+  default: op
+  description: ServerAuth commands permissions.
+  children:
+   serverauth.help:
+    default: true
+    description: Allows player to show ServerAuth help.
+   serverauth.info:
+    default: op
+    description: Allows player to read info about ServerAuth.
+   serverauth.reload:
+    default: op
+    description: Allows player to reload ServerAuth.
+   serverauth.register:
+    default: true
+    description: Allows registering an account.
+   serverauth.login:
+    default: true
+    description: Allows logging into an account.
+   serverauth.changepassword:
+    default: true
+    description: Allows changing account password.
+   serverauth.unregister:
+    default: true
+    description: Allows unregistering an account.
+   serverauth.logout:
+    default: true
+    description: Allows logging out an account.<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 07/01/2016 07:43 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth;
+
+use pocketmine\plugin\PluginBase;
+use pocketmine\command\CommandExecutor;
+use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
+use pocketmine\command\CommandSender;
+use pocketmine\Server;
+use pocketmine\Player;
+use pocketmine\OfflinePlayer;
+
+class ServerAuth extends PluginBase {
+	
+	//About Plugin Const
+	
+	/** @var string PRODUCER Plugin producer */
+	const PRODUCER = "EvolSoft";
+	
+	/** @var string VERSION Plugin version */
+	const VERSION = "2.13";
+	
+	/** @var string MAIN_WEBSITE Plugin producer website */
+	const MAIN_WEBSITE = "http://www.evolsoft.tk";
+	
+	//Other Const
+	
+	/** @var string PREFIX Plugin prefix */
+	const PREFIX = "&1[ServerAuth] ";
+	
+	//Error const
+	
+	/** @var int ERR_USER_NOT_REGISTERED User not registered */
+	const ERR_USER_NOT_REGISTERED = 0;
+
+	/** @var int SUCCESS Success */
+	const SUCCESS = 1;
+	
+	/** @var int ERR_WRONG_PASSWORD Wrong password error */
+	const ERR_WRONG_PASSWORD = 2;
+	
+	/** @var int ERR_USER_NOT_AUTHENTICATED User not authenticated error */
+	const ERR_USER_NOT_AUTHENTICATED = 3;
+	
+	/** @var int ERR_USER_ALREADY_AUTHENTICATED User already authenticated error */
+	const ERR_USER_ALREADY_AUTHENTICATED = 4;
+	
+	/** @var int ERR_USER_ALREADY_REGISTERED User already registered error */
+	const ERR_USER_ALREADY_REGISTERED = 5;
+	
+	/** @var int ERR_PASSWORD_TOO_SHORT Password too short error */
+	const ERR_PASSWORD_TOO_SHORT = 6;
+	
+	/** @var int ERR_PASSWORD_TOO_LONG Password too long error */
+	const ERR_PASSWORD_TOO_LONG = 7;
+	
+	/** @var int ERR_MAX_IP_REACHED Max number of same IPs reached error */
+	const ERR_MAX_IP_REACHED = 8;
+	
+	/** @var int ERR_GENERIC A generic error */
+	const ERR_GENERIC = 9;
+	
+	/** @var int CANCELLED Operation cancelled */
+	const CANCELLED = 10;
+	
+	/** @var int TOO_MANY_ATTEMPTS Too many failed login attempts */
+	const TOO_MANY_ATTEMPTS = 11;
+	
+	/** @var array $auth_users Current authenticated users */
+	private $auth_users = array();
+	
+	/** @var array $auth_attempts Authentication attempts for each username */
+	private $auth_attempts = array();
+	
+	/** @var Config $chlang Cached language file */
+	public $chlang;
+	
+	/** @var array $cached_registered_usrs Cached registered users array */
+	public $cached_registered_users = array();
+	
+	/** @var Task $task MySQL task */
+	public $task;
+
+    /** @var boolean $mysql Use mysql */
+    public $mysql;
+    
+    /** @var string $canc_message Message on cancelled event */
+    public $canc_message;
+    
+    /** @var \mysqli $datbase MySQLi instance */
+    private $database;
+    
+    /** @var boolean $register_message Register Message status */
+    private $register_message = true;
+    
+    /** @var boolean $login_message Login Message status */
+    private $login_message = true;
+    
+    /** @var ServerAuth $object Plugin instance */
+    private static $object = null;
+    
+    /**
+     * Get ServerAuth instance
+     * 
+     * @return ServerAuth ServerAuth API instance
+     */
+    public static function getAPI(){
+    	return self::$object;
+    }
+    
+    public function onLoad(){
+    	if(!(self::$object instanceof ServerAuth)){
+    		self::$object = $this;
+    	}
+    }
+    
+    /**
+     * Translate Minecraft colors
+     * 
+     * @param char $symbol Color symbol
+     * @param string $message The message to be translated
+     * 
+     * @return string The translated message
+     */
+    public function translateColors($symbol, $message){
+    
+    	$message = str_replace($symbol."0", TextFormat::BLACK, $message);
+    	$message = str_replace($symbol."1", TextFormat::DARK_BLUE, $message);
+    	$message = str_replace($symbol."2", TextFormat::DARK_GREEN, $message);
+    	$message = str_replace($symbol."3", TextFormat::DARK_AQUA, $message);
+    	$message = str_replace($symbol."4", TextFormat::DARK_RED, $message);
+    	$message = str_replace($symbol."5", TextFormat::DARK_PURPLE, $message);
+    	$message = str_replace($symbol."6", TextFormat::GOLD, $message);
+    	$message = str_replace($symbol."7", TextFormat::GRAY, $message);
+    	$message = str_replace($symbol."8", TextFormat::DARK_GRAY, $message);
+    	$message = str_replace($symbol."9", TextFormat::BLUE, $message);
+    	$message = str_replace($symbol."a", TextFormat::GREEN, $message);
+    	$message = str_replace($symbol."b", TextFormat::AQUA, $message);
+    	$message = str_replace($symbol."c", TextFormat::RED, $message);
+    	$message = str_replace($symbol."d", TextFormat::LIGHT_PURPLE, $message);
+    	$message = str_replace($symbol."e", TextFormat::YELLOW, $message);
+    	$message = str_replace($symbol."f", TextFormat::WHITE, $message);
+    
+    	$message = str_replace($symbol."k", TextFormat::OBFUSCATED, $message);
+    	$message = str_replace($symbol."l", TextFormat::BOLD, $message);
+    	$message = str_replace($symbol."m", TextFormat::STRIKETHROUGH, $message);
+    	$message = str_replace($symbol."n", TextFormat::UNDERLINE, $message);
+    	$message = str_replace($symbol."o", TextFormat::ITALIC, $message);
+    	$message = str_replace($symbol."r", TextFormat::RESET, $message);
+    
+    	return $message;
+    }
+    
+    /**
+     * Replace arrays in message
+     *
+     * @param string $message The message
+     * @param array $array The values to replace
+     *
+     * @return string the message
+     */
+    public function replaceArrays($message, $array){
+    	foreach($array as $key => $value){
+    		$message = str_replace("{" . strtoupper($key) . "}", $value, $message);
+    	}
+    	return $message;
+    }
+    
+    /**
+     * Check MySQL database status
+     * 
+     * @param string $host MySQL host
+     * @param string $port MySQL port
+     * @param string $username MySQL username
+     * @param string $password MySQL password
+     * 
+     * @return array true on success or false on error + error details
+     */
+    public function checkDatabase($host, $port, $username, $password){
+    	$status = array();
+    	$db = @new \mysqli($host, $username, $password, null, $port);
+    	if($db->connect_error){
+    		$status[0] = false;
+    		$status[1] = $db->connect_error;
+    		return $status;
+    	}else{
+    		$db->close();
+    		$status[0] = true;
+    		$status[1] = "Success!";
+    		return $status;
+    	}
+    }
+	
+    /**
+     * Initialize MySQL database connection
+     * 
+     * @param string $host
+     * @param int $port
+     * @param string $username
+     * @param string $password
+     * @param string $database
+     * @param string $table_prefix
+     * 
+     * @return boolean true on SUCCESS, false on error
+     */
+    public function initializeDatabase($host, $port, $username, $password, $database, $table_prefix){
+    	$db = @new \mysqli($host, $username, $password, null, $port);
+    	if($db->connect_error){
+    		return false;
+    	}else{
+    		$query = "CREATE DATABASE " . $database;
+    		if ($db->query($query) == true) {
+    			$db->select_db($database);
+    			//Create Tables
+    			if(\mysqli_num_rows($db->query("SHOW TABLES LIKE '" . $table_prefix . "serverauth'")) == 0){
+    				$query = "CREATE TABLE " . $table_prefix . "serverauth (version VARCHAR(50), api_version VARCHAR(50), password_hash VARCHAR(50))";
+    				$db->query($query);
+    			}
+    			if(\mysqli_num_rows($db->query("SHOW TABLES LIKE '" . $table_prefix . "serverauthdata'")) == 0){
+    				$query = "CREATE TABLE " . $table_prefix . "serverauthdata (user VARCHAR(50), password VARCHAR(200), ip VARCHAR(50), firstlogin VARCHAR(50), lastlogin VARCHAR(50))";
+    				$db->query($query);
+    			}
+    		    //Initialize Tables
+    		    if(\mysqli_num_rows($db->query("SELECT version, api_version FROM " . $table_prefix . "serverauth")) == 0){
+    				$query = "INSERT INTO " . $table_prefix . "serverauth (version, api_version, password_hash) VALUES ('" . $this->getVersion() . "', '" . $this->getAPIVersion() . "', '" . $this->getPasswordHash() . "')";
+    				$db->query($query);
+    			}else{
+    				$query = "UPDATE " . $table_prefix . "serverauth SET version='" . $this->getVersion() . "', api_version='" . $this->getAPIVersion() . "', password_hash='" . $this->getPasswordHash() . "' LIMIT 1";
+    				$db->query($query);
+    			}
+    		}else{
+    			$db->select_db($database);
+    			//Create Tables
+    			if(\mysqli_num_rows($db->query("SHOW TABLES LIKE '" . $table_prefix . "serverauth'")) == 0){
+    				$query = "CREATE TABLE " . $table_prefix . "serverauth (version VARCHAR(50), api_version VARCHAR(50), password_hash VARCHAR(50))";
+    				$db->query($query);
+    			}
+    			if(\mysqli_num_rows($db->query("SHOW TABLES LIKE '" . $table_prefix . "serverauthdata'")) == 0){
+    				$query = "CREATE TABLE " . $table_prefix . "serverauthdata (user VARCHAR(50), password VARCHAR(200), ip VARCHAR(50), firstlogin VARCHAR(50), lastlogin VARCHAR(50))";
+    				$db->query($query);
+    			}
+    		    //Initialize Tables
+    		    if(\mysqli_num_rows($db->query("SELECT version, api_version FROM " . $table_prefix . "serverauth")) == 0){
+                    $query = "INSERT INTO " . $table_prefix . "serverauth (version, api_version, password_hash) VALUES ('" . $this->getVersion() . "', '" . $this->getAPIVersion() . "', '" . $this->getPasswordHash() . "')";
+    				$db->query($query);
+    			}else{
+    				$query = "UPDATE " . $table_prefix . "serverauth SET version='" . $this->getVersion() . "', api_version='" . $this->getAPIVersion() . "', password_hash='" . $this->getPasswordHash() . "' LIMIT 1";
+    				$db->query($query);
+    			}
+    		}
+    		$this->database = $db;
+    	}
+    }
+    
+    /**
+     * Search string in yml files
+     * 
+     * @param string $path Search path
+     * @param string $str The string to search
+     * 
+     * @return int $count The number of occurrencies
+     */
+    private function grep($path, $str){
+    	$count = 0;
+    	foreach(glob($path . "*.yml") as $filename){
+    		foreach(file($filename) as $fli=>$fl){
+    			if(strpos($fl, $str) !== false){
+    				$count += 1;
+    			}
+    		}
+    	}
+    	return $count;
+    }
+    
+    public function onEnable(){
+	    @mkdir($this->getDataFolder());
+	    @mkdir($this->getDataFolder() . "users/");
+	    @mkdir($this->getDataFolder() . "languages/");
+	    //Save Languages
+	    foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->getFile() . "resources/languages")) as $resource){
+	    	$resource = str_replace("\\", "/", $resource);
+	    	$resarr = explode("/", $resource);
+	    	if(substr($resarr[count($resarr) - 1], strrpos($resarr[count($resarr) - 1], '.') + 1) == "yml"){
+	    		$this->saveResource("languages/" . $resarr[count($resarr) - 1]);
+	    	}
+	    }
+        $this->saveDefaultConfig();
+        $this->cfg = $this->getConfig()->getAll();
+        $this->getCommand("serverauth")->setExecutor(new Commands\Commands($this));
+        $this->getCommand("register")->setExecutor(new Commands\Register($this));
+        $this->getCommand("login")->setExecutor(new Commands\Login($this));
+        $this->getCommand("logout")->setExecutor(new Commands\Logout($this));
+        $this->getCommand("changepassword")->setExecutor(new Commands\ChangePassword($this));
+        $this->getCommand("unregister")->setExecutor(new Commands\Unregister($this));
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new Tasks\MessageTask($this), 20);
+        $this->task = $this->getServer()->getScheduler()->scheduleRepeatingTask(new Tasks\MySQLTask($this), 20);
+        $this->mysql = false;
+        $this->chlang = ServerAuth::getAPI()->getConfigLanguage()->getAll();
+        //Check MySQL
+        if($this->cfg["use-mysql"] == true){
+        	$check = $this->checkDatabase($this->cfg["mysql"]["host"], $this->cfg["mysql"]["port"], $this->cfg["mysql"]["username"], $this->cfg["mysql"]["password"]);
+        	if($check[0]){
+        		$this->initializeDatabase($this->cfg["mysql"]["host"], $this->cfg["mysql"]["port"], $this->cfg["mysql"]["username"], $this->cfg["mysql"]["password"], $this->cfg["mysql"]["database"], $this->cfg["mysql"]["table_prefix"]);
+        		Server::getInstance()->getLogger()->info($this->translateColors("&", ServerAuth::PREFIX . $this->chlang["mysql-success"]));
+        		$this->mysql = true;
+        	}else{
+        		Server::getInstance()->getLogger()->info($this->translateColors("&", ServerAuth::PREFIX . ServerAuth::getAPI()->replaceArrays($this->chlang["mysql-fail"], array("MYSQL_ERROR" => $check[1]))));
+        	}
+        }
+    }
+    
+    //API Functions
+    
+    /** @var string API_VERSION ServerAuth API version */
+    const API_VERSION = "1.1.1";
+    
+    /**
+     * Get ServerAuth version
+     * 
+     * @return string ServerAuth version
+     */
+    public function getVersion(){
+    	return ServerAuth::VERSION;
+    }
+    
+    /**
+     * Get ServerAuth API version
+     * 
+     * @return string ServerAuth API version
+     */
+    public function getAPIVersion(){
+    	return ServerAuth::API_VERSION;
+    }
+    
+    /**
+     * Get the current MySQL database instance
+     * 
+     * @return mysqli|boolean
+     */
+    public function getDatabase(){
+    	if($this->database instanceof \mysqli){
+    		return $this->database;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    /**
+     * Get ServerAuth database configuration
+     * 
+     * @return array
+     */
+    public function getDatabaseConfig(){
+    	return $this->getConfig()->getAll()["mysql"];
+    }
+    
+    /**
+     * Get ServerAuth data provider
+     *
+     * @return boolean true if ServerAuth is using MySQL, false if ServerAuth is using YAML config
+     */
+    public function getDataProvider(){
+    	return $this->mysql;
+    }
+    
+    /**
+     * Check if register messages are enabled
+     * 
+     * @return boolean
+     */
+    public function areRegisterMessagesEnabled(){
+    	return $this->register_message;
+    }
+    
+    /**
+     * Enable\Disable register messages
+     * 
+     * @param boolean $bool
+     */
+    public function enableRegisterMessages($bool = true){
+    	if(is_bool($bool)){
+    		$this->register_message = $bool;
+    	}else{
+    		$this->register_message = true;
+    	}
+    }
+    
+    /**
+     * Check if login messages are enabled
+     *
+     * @return boolean
+     */
+    public function areLoginMessagesEnabled(){
+    	return $this->login_message;
+    }
+    
+    /**
+     * Enable\Disable login messages
+     *
+     * @param boolean $bool
+     */
+    public function enableLoginMessages($bool = true){
+    	if(is_bool($bool)){
+    		$this->login_message = $bool;
+    	}else{
+    		$this->login_message = true;
+    	}
+    }
+    
+    /**
+     * Get cancelled event message
+     * 
+     * @return string message
+     */
+    public function getCancelledMessage(){
+    	return $this->canc_message;
+    }
+    
+    /**
+     * Get player data
+     *
+     * @param string $player
+     *
+     * @return array|int the array of player data on SUCCESS, otherwise the current error
+     */
+    public function getPlayerData($player){
+    	if($this->isPlayerRegistered($player)){
+    		if($this->getDataProvider()){
+    			//Check MySQL connection
+    			if($this->getDatabase() && $this->getDatabase()->ping()){
+    				$stmt = $this->getDatabase()->prepare("SELECT user, password, ip, firstlogin, lastlogin FROM " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata WHERE user=?");
+    				$stmt_player = strtolower($player);
+    				$stmt->bind_param("s", $stmt_player);
+    				if($stmt->execute()){
+    					$stmt->bind_result($user, $password, $ip, $firstlogin, $lastlogin);
+    					$stmt->fetch();
+    					$data = array(
+    						"password" => $password,
+    						"ip" => $ip,
+    						"firstlogin" => $firstlogin,
+                            "lastlogin" => $lastlogin
+    					);
+    					$stmt->close();
+    					return $data;
+    				}else{
+    					$stmt->close();
+    					return ServerAuth::ERR_GENERIC;
+    				}
+    			}else{
+    				return ServerAuth::ERR_GENERIC;
+    			}
+    		}else{
+    			$cfg = new Config($this->getDataFolder() . "users/" . strtolower($player . ".yml"), Config::YAML);
+    			return $cfg->getAll();
+    		}
+    	}else{
+    		return $this->isPlayerRegistered($player);	
+    	}
+    }
+    
+    /**
+     * Get ServerAuth password hash
+     * 
+     * @return string
+     */
+    public function getPasswordHash(){
+    	$cfg = $this->getConfig()->getAll();
+    	return $cfg["passwordHash"];
+    }
+    
+    /**
+     * Get language data
+     * 
+     * @param string $language
+     * 
+     * @return \pocketmine\utils\Config
+     */
+    public function getLanguage($language){
+    	if(file_exists($this->getDataFolder() . "languages/" . $language . ".yml")){
+    		return new Config($this->getDataFolder() . "languages/" . $language . ".yml", Config::YAML);
+    	}elseif(file_exists($this->getDataFolder() . "languages/EN_en.yml")){
+    		return new Config($this->getDataFolder() . "languages/EN_en.yml", Config::YAML);
+    	}else{
+    		@mkdir($this->getDataFolder() . "languages/");
+    		$this->saveResource("languages/EN_en.yml");
+    		return new Config($this->getDataFolder() . "languages/EN_en.yml", Config::YAML);
+    	}
+    }
+    
+    /**
+     * Get the ServerAuth language specified in config
+     * 
+     * @return \pocketmine\utils\Config
+     */
+    public function getConfigLanguage(){
+    	$cfg = $this->getConfig()->getAll();
+    	return $this->getLanguage($cfg["language"]);
+    }
+    
+    /**
+     * Check if a player is registered
+     * 
+     * @param string $player
+     * 
+     * @return boolean|int true or false on SUCCESS, otherwise the current error
+     */
+    public function isPlayerRegistered($player){
+    	if($this->getDataProvider()){
+    		//Check MySQL connection
+    		if($this->getDatabase() && $this->getDatabase()->ping()){
+    			$stmt = $this->getDatabase()->prepare("SELECT user, password, ip, firstlogin, lastlogin FROM " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata WHERE user=?");
+    			$stmt_player = strtolower($player);
+    			$stmt->bind_param("s", $stmt_player);
+    			$stmt->execute();
+    			$stmt->store_result();
+    			if($stmt->num_rows == 0){
+    				//Unset User in cached array
+    				if(isset($this->cached_registered_users[strtolower($player)])){
+    					unset($this->cached_registered_users[strtolower($player)]);
+    				}
+    				$stmt->close();
+    				return false;
+    			}else{
+    				//Set User in cached array
+    				if(!isset($this->cached_registered_users[strtolower($player)])){
+    					$this->cached_registered_users[strtolower($player)] = "";
+    				}
+    				$stmt->close();
+    				return true;
+    			}
+    		}else{
+    			return ServerAuth::ERR_GENERIC;
+    		}
+    	}else{
+    		$status = file_exists($this->getDataFolder() . "users/" . strtolower($player . ".yml"));
+    		if($status){
+    			//Set User in cached array
+    			if(!isset($this->cached_registered_users[strtolower($player)])){
+    				$this->cached_registered_users[strtolower($player)] = "";
+    			}
+    		}else{
+    			//Unset User in cached array
+    			if(isset($this->cached_registered_users[strtolower($player)])){
+    				unset($this->cached_registered_users[strtolower($player)]);
+    			}
+    		}
+    		return $status;
+    	}
+    }
+    
+    /**
+     * Check if a player is authenticated
+     * 
+     * @param Player $player
+     * 
+     * @return boolean
+     */
+    public function isPlayerAuthenticated(Player $player){
+    	return isset($this->auth_users[strtolower($player->getName())]);
+    }
+    
+    /**
+     * Register a player to ServerAuth
+     * 
+     * @param Player $player
+     * @param string $password
+     * 
+     * @return int|boolean true on SUCCESS, otherwise the current error
+     */
+    public function registerPlayer(Player $player, $password){
+    	$cfg = $this->getConfig()->getAll();
+    	if($this->isPlayerRegistered($player->getName())){
+    		return ServerAuth::ERR_USER_ALREADY_REGISTERED;
+    	}else{
+    		if(strlen($password) <= $cfg["minPasswordLength"]){
+    			return ServerAuth::ERR_PASSWORD_TOO_SHORT;
+    		}elseif(strlen($password) >= $cfg["maxPasswordLength"]){
+    			return ServerAuth::ERR_PASSWORD_TOO_LONG;
+    		}else{
+    			//Reset cancelled message
+    			$this->canc_message = $this->chlang["operation-cancelled"];
+    			$this->getServer()->getPluginManager()->callEvent($event = new Events\ServerAuthRegisterEvent($player, $password));
+    			if($event->isCancelled()){
+    				return ServerAuth::CANCELLED;
+    			}
+    			if($this->getDataProvider()){
+    				//Check MySQL connection
+    				if($this->getDatabase() && $this->getDatabase()->ping()){
+    					if($cfg["register"]["enable-max-ip"]){
+    						$stmt = $this->getDatabase()->prepare("SELECT user, password, ip, firstlogin, lastlogin FROM " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata WHERE ip=?");
+    						$stmt_address = $player->getAddress();
+    						$stmt->bind_param("s", $stmt_address);
+    						$stmt->execute();
+    						$stmt->store_result();
+    						if($stmt->num_rows + 1 <= $cfg["register"]["max-ip"]){
+    							$stmt = $this->getDatabase()->prepare("INSERT INTO " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata (user, password, ip, firstlogin, lastlogin) VALUES (?, ?, ?, ?, ?)");
+    							$stmt_player = $player->getName();
+    							$stmt_password = hash($this->getPasswordHash(), $password);
+    							$stmt_address = $player->getAddress();
+    							$stmt_firstlogin = $player->getFirstPlayed();
+    							$stmt_lastlogin = $player->getLastPlayed();
+    							$stmt->bind_param("sssss", $stmt_player, $stmt_password, $stmt_address, $stmt_firstlogin, $stmt_lastlogin);
+    							if($stmt->execute()){
+    								//Set User in cached array
+    								if(!isset($this->cached_registered_users[strtolower($player->getName())])){
+    									$this->cached_registered_users[strtolower($player->getName())] = "";
+    								}
+    								$stmt->close();
+    								return ServerAuth::SUCCESS;
+    							}else{
+    								$stmt->close();
+    								return ServerAuth::ERR_GENERIC;
+    							}
+    						}else{
+    							return ServerAuth::ERR_MAX_IP_REACHED;
+    						}
+    					}else{
+    						$stmt = $this->getDatabase()->prepare("INSERT INTO " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata (user, password, ip, firstlogin, lastlogin) VALUES (?, ?, ?, ?, ?)");
+    						$stmt_player = $player->getName();
+    						$stmt_password = hash($this->getPasswordHash(), $password);
+    						$stmt_address = $player->getAddress();
+    						$stmt_firstlogin = $player->getFirstPlayed();
+    						$stmt_lastlogin = $player->getLastPlayed();
+    						$stmt->bind_param("sssss", $stmt_player, $stmt_password, $stmt_address, $stmt_firstlogin, $stmt_lastlogin);
+    						if($stmt->execute()){
+    							//Set User in cached array
+    							if(!isset($this->cached_registered_users[strtolower($player->getName())])){
+    								$this->cached_registered_users[strtolower($player->getName())] = "";
+    							}
+    							$stmt->close();
+    							return ServerAuth::SUCCESS;
+    						}else{
+    							$stmt->close();
+    							return ServerAuth::ERR_GENERIC;
+    						}
+    					}
+    				}else{
+    					return ServerAuth::ERR_GENERIC;
+    				}
+    			}else{
+    				if($cfg["register"]["enable-max-ip"]){
+    					if($this->grep($this->getDataFolder() . "users/", $player->getAddress()) + 1 <= $cfg["register"]["max-ip"]){
+    						$data = new Config($this->getDataFolder() . "users/" . strtolower($player->getName() . ".yml"), Config::YAML);
+    						$data->set("password", hash($this->getPasswordHash(), $password));
+    						$data->set("ip", $player->getAddress());
+    						$data->set("firstlogin", $player->getFirstPlayed());
+    						$data->set("lastlogin", $player->getLastPlayed());
+    						$data->save();
+    						//Set User in cached array
+    						if(!isset($this->cached_registered_users[strtolower($player->getName())])){
+    							$this->cached_registered_users[strtolower($player->getName())] = "";
+    						}
+    						return ServerAuth::SUCCESS;
+    					}else{
+    						return ServerAuth::ERR_MAX_IP_REACHED;
+    					}
+    				}else{
+    					$data = new Config($this->getDataFolder() . "users/" . strtolower($player->getName() . ".yml"), Config::YAML);
+    					$data->set("password", hash($this->getPasswordHash(), $password));
+    					$data->set("ip", $player->getAddress());
+    					$data->set("firstlogin", $player->getFirstPlayed());
+    					$data->set("lastlogin", $player->getLastPlayed());
+    					$data->save();
+    					//Set User in cached array
+    					if(!isset($this->cached_registered_users[strtolower($player->getName())])){
+    						$this->cached_registered_users[strtolower($player->getName())] = "";
+    					}
+    					return ServerAuth::SUCCESS;
+    				}
+    			}
+    		}
+    	}
+    }
+    
+	/**
+	 * Unregister a player
+	 * 
+	 * @param Player|OfflinePlayer $player
+	 * 
+	 * @return int|boolean true on SUCCESS or false if the player is not registered, otherwise the current error
+	 */
+    public function unregisterPlayer($player){
+    	$pname = $player;
+    	if($player instanceof Player || $player instanceof OfflinePlayer){
+    		$pname = $player->getName();
+    	}
+    	if($this->isPlayerRegistered($pname)){
+    		//Reset cancelled message
+    		$this->canc_message = $this->chlang["operation-cancelled"];
+    		$this->getServer()->getPluginManager()->callEvent($event = new Events\ServerAuthUnregisterEvent($player));
+    		if($event->isCancelled()){
+    			return ServerAuth::CANCELLED;
+    		}
+    		if($this->getDataProvider()){
+    			//Check MySQL connection
+    			if($this->getDatabase() && $this->getDatabase()->ping()){
+    				$stmt = $this->getDatabase()->prepare("DELETE FROM " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata WHERE user=?");
+    				$stmt_player = strtolower($pname);
+    				$stmt->bind_param("s", $stmt_player);
+    				if($stmt->execute()){
+    					$stmt->close();
+    					//Unset User from cache
+    					if(isset($this->cached_registered_users[strtolower($pname)])){
+    						unset($this->cached_registered_users[strtolower($pname)]);
+    					}
+    					//Deauthenticate player
+    				    if($player instanceof Player){
+    						ServerAuth::getAPI()->deauthenticatePlayer($player);
+    					}
+    					//Restore default messages
+    					ServerAuth::getAPI()->enableLoginMessages(true);
+    					ServerAuth::getAPI()->enableRegisterMessages(true);
+    					return ServerAuth::SUCCESS;
+    				}else{
+    					$stmt->close();
+    					return ServerAuth::ERR_GENERIC;
+    				}
+    			}else{
+    				return ServerAuth::ERR_GENERIC;
+    			}
+    		}else{
+    			@unlink($this->getDataFolder() . "users/" . strtolower($pname . ".yml"));
+    			//Unset User from cache
+    			if(isset($this->cached_registered_users[strtolower($pname)])){
+    				unset($this->cached_registered_users[strtolower($pname)]);
+    			}
+    			//Deauthenticate player
+    			if($player instanceof Player){
+    				ServerAuth::getAPI()->deauthenticatePlayer($player);
+    			}
+    			//Restore default messages
+    			ServerAuth::getAPI()->enableLoginMessages(true);
+    			ServerAuth::getAPI()->enableRegisterMessages(true);
+    			return ServerAuth::SUCCESS;
+    		}
+    	}else{
+    		return ServerAuth::ERR_USER_NOT_REGISTERED;
+    	}
+    }
+    
+    /**
+     * Authenticate a Player
+     * 
+     * @param Player $player
+     * @param string $password
+     * @param boolean $hash
+     * 
+     * @return int|boolean true on SUCCESS, otherwise the current error
+     */
+    public function authenticatePlayer(Player $player, $password, $hash = true){
+    	if($hash){
+    		$password = hash($this->getPasswordHash(), $password);
+    	}
+    	if($this->isPlayerRegistered($player->getName())){
+    		if(!$this->isPlayerAuthenticated($player)){
+    			//Reset cancelled message
+    			$this->canc_message = $this->chlang["operation-cancelled"];
+    			$this->getServer()->getPluginManager()->callEvent($event = new Events\ServerAuthAuthenticateEvent($player));
+    			if($event->isCancelled()){
+    				return ServerAuth::CANCELLED;
+    			}
+    			$cfg = $this->getConfig()->getAll();
+    			if($this->getDataProvider()){
+    				//Check MySQL connection
+    				if($this->getDatabase() && $this->getDatabase()->ping()){
+    					$stmt = $this->getDatabase()->prepare("SELECT user, password, ip, firstlogin, lastlogin FROM " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata WHERE user=?");
+    					$stmt_player = strtolower($player->getName());
+    					$stmt->bind_param("s", $stmt_player);
+    					$stmt->execute();
+    					$stmt->bind_result($user, $db_password, $ip, $firstlogin, $lastlogin);
+    					$stmt->fetch();
+    					$stmt->close();
+    					if($db_password){
+    						if($password == $db_password){
+    							$stmt = $this->getDatabase()->prepare("UPDATE " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata SET ip=?, lastlogin=? WHERE user=?");
+    							$stmt_ip = $player->getAddress();
+    							$stmt_lastplayed = $player->getLastPlayed();
+    							$stmt_player = strtolower($player->getName());
+    							$stmt->bind_param("sss", $stmt_ip, $stmt_lastplayed, $stmt_player);
+    							if($stmt->execute()){
+    								$this->auth_users[strtolower($player->getName())] = "";
+    								if($cfg['login']['enable-failed-logins-kick'] && isset($this->auth_attempts[strtolower($player->getName())])){
+    									unset($this->auth_attempts[strtolower($player->getName())]);
+    								}
+    								$stmt->close();
+    								return ServerAuth::SUCCESS;
+    							}else{
+    								$stmt->close();
+    								return ServerAuth::ERR_GENERIC;
+    							}
+    						}else{
+    							if($cfg['login']['enable-failed-logins-kick']){
+    								if(isset($this->auth_attempts[strtolower($player->getName())])){
+    									$this->auth_attempts[strtolower($player->getName())]++;
+    								}else{
+    									$this->auth_attempts[strtolower($player->getName())] = 1;
+    								}
+    								if($this->auth_attempts[strtolower($player->getName())] >= $cfg['login']['max-login-attempts']){
+    									$player->close("", $this->translateColors("&", $this->chlang["login"]["too-many-attempts"]));
+    									unset($this->auth_attempts[strtolower($player->getName())]);
+    									return ServerAuth::TOO_MANY_ATTEMPTS;
+    								}
+    							}
+    							return ServerAuth::ERR_WRONG_PASSWORD;
+    						}
+    					}else{
+    						return ServerAuth::ERR_GENERIC;
+    					}
+    				}else{
+    					return ServerAuth::ERR_GENERIC;
+    				}
+    			}else{
+    				$data = new Config($this->getDataFolder() . "users/" . strtolower($player->getName() . ".yml"), Config::YAML);
+    				if($password == $data->get("password")){
+    					$data->set("ip", $player->getAddress());
+    					$data->set("lastlogin", $player->getLastPlayed());
+    					$data->save();
+    					$this->auth_users[strtolower($player->getName())] = "";
+    					if($cfg['login']['enable-failed-logins-kick'] && isset($this->auth_attempts[strtolower($player->getName())])){
+    						unset($this->auth_attempts[strtolower($player->getName())]);
+    					}
+    					return ServerAuth::SUCCESS;
+    				}else{
+    					if($cfg['login']['enable-failed-logins-kick']){
+    						if(isset($this->auth_attempts[strtolower($player->getName())])){
+    							$this->auth_attempts[strtolower($player->getName())]++;
+    						}else{
+    							$this->auth_attempts[strtolower($player->getName())] = 1;
+    						}
+    						if($this->auth_attempts[strtolower($player->getName())] >= $cfg['login']['max-login-attempts']){
+    							$player->close("", $this->translateColors("&", $this->chlang["login"]["too-many-attempts"]));
+    							unset($this->auth_attempts[strtolower($player->getName())]);
+    							return ServerAuth::TOO_MANY_ATTEMPTS;
+    						}
+    					}    					
+    					return ServerAuth::ERR_WRONG_PASSWORD;
+    				}
+    			}
+    		}else{
+    			return ServerAuth::ERR_USER_ALREADY_AUTHENTICATED;
+    		}
+    	}else{
+    		return $this->isPlayerRegistered($player->getName());
+    	}
+    }
+    
+    /**
+     * Deauthenticate a player
+     * 
+     * @param Player $player
+     * 
+     * @return int|boolean true on SUCCESS, otherwise the current error
+     */
+    public function deauthenticatePlayer(Player $player){
+    	if($this->isPlayerAuthenticated($player)){
+    		//Reset cancelled message
+    		$this->canc_message = $this->chlang["operation-cancelled"];
+    		$this->getServer()->getPluginManager()->callEvent($event = new Events\ServerAuthDeauthenticateEvent($player));
+    		if($event->isCancelled()){
+    			return ServerAuth::CANCELLED;
+    		}
+    		//Restore default messages
+    		ServerAuth::getAPI()->enableLoginMessages(true);
+    		ServerAuth::getAPI()->enableRegisterMessages(true);
+    		unset($this->auth_users[strtolower($player->getName())]);
+    		return ServerAuth::SUCCESS;
+    	}else{
+    		return ServerAuth::ERR_USER_NOT_AUTHENTICATED;
+    	}
+    }
+    
+	/**
+	 * Change player password
+	 * 
+	 * @param Player|OfflinePlayer $player
+	 * @param string $new_password
+	 * 
+	 * @return int|boolean true on SUCCESS or false if the player is not registered, otherwise the current error
+	 */
+    public function changePlayerPassword($player, $new_password){
+    	if($player instanceof Player || $player instanceof OfflinePlayer){
+	    	$cfg = $this->getConfig()->getAll();
+	    	if($this->isPlayerRegistered($player->getName())){
+	    		if(strlen($new_password) < $cfg["minPasswordLength"]){
+	    			return ServerAuth::ERR_PASSWORD_TOO_SHORT;
+	    		}elseif(strlen($new_password) > $cfg["maxPasswordLength"]){
+	    			return ServerAuth::ERR_PASSWORD_TOO_LONG;
+	    		}else{
+	    			//Reset cancelled message
+	    			$this->canc_message = $this->chlang["operation-cancelled"];
+	    			$this->getServer()->getPluginManager()->callEvent($event = new Events\ServerAuthPasswordChangeEvent($player, $new_password));
+	    			if($event->isCancelled()){
+	    				return ServerAuth::CANCELLED;
+	    			}
+	    			if($this->getDataProvider()){
+	    				//Check MySQL connection
+	    				if($this->getDatabase() && $this->getDatabase()->ping()){
+	    					$stmt = $this->getDatabase()->prepare("UPDATE " . $this->getDatabaseConfig()["table_prefix"] . "serverauthdata SET password=? WHERE user=?");
+	    					$stmt_password = hash($this->getPasswordHash(), $new_password);
+	    					$stmt_player = strtolower($player->getName());
+	    					$stmt->bind_param("ss", $stmt_password, $stmt_player);
+	    					if($stmt->execute()){
+	    						$stmt->close();
+	    						return ServerAuth::SUCCESS;
+	    					}else{
+	    						$stmt->close();
+	    						return ServerAuth::ERR_GENERIC;
+	    					}
+	    				}else{
+	    					return ServerAuth::ERR_GENERIC;
+	    				}
+	    			}else{
+	    				$data = new Config($this->getDataFolder() . "users/" . strtolower($player->getName() . ".yml"), Config::YAML);
+	    				$data->set("password", hash($this->getPasswordHash(), $new_password));
+	    				$data->save();
+	    				return ServerAuth::SUCCESS;
+	    			}	
+	    		}
+	    	}else{
+	    		return $this->isPlayerRegistered($player->getName());
+	    	}
+    	}else{
+    		return ServerAuth::ERR_USER_NOT_REGISTERED;
+    	}
+    }
+    
+}
+?>#ServerAuth plugin English language file
+#Translation by Flavius12, EvolSoft
+---
+join-message: "&bAuthentication system provided by &aServerAuth &bplugin"
+single-auth: "&cA player with this nickname is already authenticated!"
+mysql-success: "&aServerAuth successfully connected to the MySQL database!"
+mysql-restored: "&aMySQL connection restored!"
+mysql-fail: "&cServerAuth can't connect to the MySQL database. Data will be saved locally. Error: {MYSQL_ERROR}" 
+config-reloaded: "&aConfiguration reloaded!"
+operation-cancelled: "&cOperation cancelled"
+login:
+  message: "&cPlease login with /login <password>"
+  disabled: "&cLogin disabled in this server"
+  command: "&cUsage: /login <password>"
+  ip-login: "&9You are logged in by IP"
+  login-success: "&aYou have been logged in!"
+  login-timeout: "&cLogin Timeout"
+  already-login: "&aYou are already logged in"
+  too-many-attempts: "&cToo many login attempts!"
+register: 
+  message: "&cPlease register with /register <password>"
+  message-conf: "&cPlease register with /register <password> <confirmPassword>"
+  disabled: "&cRegister disabled in this server"
+  command: "&cUsage: /register <password>"
+  command-conf: "&cUsage: /register <password> <confirmPassword>"
+  register-success: "&aYou are now registered!"
+  register-timeout: "&cRegister Timeout"
+  already-registered: "&aYou are already registered"
+changepassword:
+  disabled: "&cChange password disabled in this server"
+  login-required: "&cYou need to be logged in to change password"
+  command: "&cUsage: /changepassword <newPassword>"
+  command-conf: "&cUsage: /changepassword <newPassword> <confirmPassword>"
+  command-cons: "&cUsage: /changepassword <player> <newPassword>"
+  changepassword-success: "&aPassword changed!"
+  changepassword-cons-success: "&aPassword for user &b{PLAYER} &achanged to &b{PASSWORD}"
+logout:
+  disabled: "&cLogout disabled in this server"
+  logout-success: "&aYou have been logged out"
+unregister:
+  disabled: "&cUnregister disabled in this server"
+  login-required: "&cYou need to be logged in to unregister"
+  command: "&cUsage: /unregister <password>"
+  command-cons: "&cUsage: /unregister <player>"
+  unregister-success: "&aYou are now unregistered!"
+  unregister-success-3rd: "&aThe player is now unregistered!"
+help:
+   1: "&b=> &aAvailable Commands &b<="
+   2: "&a/changepassword &b=>&a Change the account password"
+   3: "&a/login &b=>&a Do login"
+   4: "&a/logout &b=>&a Do logout"
+   5: "&a/register &b=>&a Register an account"
+   6: "&a/serverauth help &b=>&a Show help about this plugin"
+   7: "&a/serverauth info &b=>&a Show info about this plugin"
+   8: "&a/serverauth reload &b=>&a Reload the config"
+   9: "&a/unregister &b=>&a Unregister your account"
+   error: "&cSubcommand &a{SUBCMD} &cnot found. Use &a/serverauth help &cto show available commands"
+errors:
+  generic: "&cAn error has occurred"
+  wrong-password: "&cWrong Password"
+  password-no-match: "&cPassword doesn't match confirmation"
+  password-too-short: "&cPassword too short"
+  password-too-long: "&cPassword too long"
+  user-not-registered: "&cYou are not registered"
+  user-not-registered-3rd: "&cThe player isn't registered"
+  user-not-authenticated: "&cYou are not logged in"
+  max-ip-reached: "&cYou reached the maximum number of registrations per IP"
+  no-permissions: "&cYou don't have permissions to use this command"
+  player-only: "&cYou can only perform this command as a player"
+...#ServerAuth plugin Spanish language file
+#Translation by TonyDroidd
+---
+join-message: "&bSistema de autenticación proporcionado por &aServerAuth &bplugin"
+single-auth: "&cA player with this nickname is already authenticated!"
+mysql-success: "&aServerAuth successfully connected to the MySQL database!"
+mysql-restored: "&aMySQL connection restored!"
+mysql-fail: "&cServerAuth can't connect to the MySQL database. Data will be saved locally. Error: {MYSQL_ERROR}" 
+config-reloaded: "&aConfiguration reloaded!"
+operation-cancelled: "&cOperation cancelled"
+login:
+  message: "&cPor favor, inicia sesion usando /login <contraseña>"
+  disabled: "&cAutenticacion esta desactivada en este servidor"
+  command: "&cIntenta usando: /login <contraseña>"
+  ip-login: "&9Haz iniciado sesion con tu IP."
+  login-success: "&aHaz iniciado sesion!"
+  login-timeout: "&cEl tiempo de autenticacion ha expirado!"
+  already-login: "&aYa haz iniciado sesión!"
+  too-many-attempts: "&cDemasiados intentos de acceso!"
+register: 
+  message: "&cPor favor, registrate usando /register <contraseña>"
+  message-conf: "&cPor favor, registrate con /register <contraseña> <confirmarContraseña>"
+  disabled: "&cLa registracion esta desactivada en este servidor!"
+  command: "&cIntenta usandoe: /register <contraseña>"
+  command-conf: "&cUsa: /register <contraseña> <confirmarContraseña>"
+  register-success: "&aTe haz registrado correctamente!!"
+  register-timeout: "&cHaz excedido el limite de tiempo!"
+  already-registered: "&aYa estás registrado!"
+changepassword:
+  disabled: "&cCambio de contraseña está desactivado en este servidor"
+  login-required: "&cNecesitas iniciar sesion para cambiar tu contraseña"
+  command: "&cUsa el comando: /changepassword <nuevaContraseña>"
+  command-conf: "&cUsa: /changepassword <nuevaContraseña> <confirmarContraseña>"
+  command-cons: "&cUsage: /changepassword <player> <newPassword>"
+  changepassword-success: "&aContraseña cambiada correctamente!"
+  changepassword-cons-success: "&aPassword for user &b{PLAYER} &achanged to &b{PASSWORD}"
+logout:
+  disabled: "&cCerrar sesion esta desactivado en este servidor!"
+  logout-success: "&aYa haz cerrado sesion"
+unregister:
+  disabled: "&cNo tienes permisos de desregistrarte"
+  login-required: "&cNecesitas iniciar sesion para desregistrarte"
+  command: "&cUsa: /unregister <contraseña>"
+  command-cons: "&cUsage: /unregister <player>"
+  unregister-success: "&aTe haz desregistrado!"
+  unregister-success-3rd: "&aThe player is now unregistered!"
+help:
+   1: "&b=> &aAvailable Commands &b<="
+   2: "&a/changepassword &b=>&a Change the account password"
+   3: "&a/login &b=>&a Do login"
+   4: "&a/logout &b=>&a Do logout"
+   5: "&a/register &b=>&a Register an account"
+   6: "&a/serverauth help &b=>&a Show help about this plugin"
+   7: "&a/serverauth info &b=>&a Show info about this plugin"
+   8: "&a/serverauth reload &b=>&a Reload the config"
+   9: "&a/unregister &b=>&a Unregister your account"
+   error: "&cSubcommand &a{SUBCMD} &cnot found. Use &a/serverauth help &cto show available commands"
+errors:
+  generic: "&cHa ocurrido un error desconocido!"
+  wrong-password: "&cLa contraseña incorrecta"
+  password-no-match: "&cLas contraseñas no coinciden"
+  password-too-short: "&cLa contraseña es muy corta"
+  password-too-long: "&cLa contraseña es muy larga!"
+  user-not-registered: "&cNo estas registrado en este servidor"
+  user-not-registered-3rd: "&cThe player isn't registered"
+  user-not-authenticated: "&cNo haz iniciado sesion!"
+  max-ip-reached: "&cHas alcanzado el número máximo de inscripciones para ip"
+  no-permissions: "&cYou don't have permissions to use this command"
+  player-only: "&cYou can only perform this command as a player"
+...#ServerAuth plugin Italian language file
+#Translation by Flavius12, EvolSoft
+---
+join-message: "&bSistema di autenticazione fornito da &aServerAuth"
+single-auth: "&cUn player con questo nickname è già autenticato!"
+mysql-success: "&aServerAuth connesso al database MySQL con successo!"
+mysql-restored: "&aConnessione MySQL ripristinata!"
+mysql-fail: "&cServerAuth non è riuscito a connettersi al database MySQL. I dati verranno salvati localmente. Errore: {MYSQL_ERROR}"
+config-reloaded: "&aConfigurazione ricaricata!"
+operation-cancelled: "&cOperazione cancellata"
+login:
+  message: "&cEsegui il login con /login <password>"
+  disabled: "&cIl login è disabilitato in questo server"
+  command: "&cUso: /login <password>"
+  ip-login: "&9Sei autenticato per IP"
+  login-success: "&aHai eseguito il login!"
+  login-timeout: "&cTempo di login scaduto"
+  already-login: "&aSei già autenticato"
+  too-many-attempts: "&cTroppi tentativi di login!"
+register: 
+  message: "&cRegistrati con /register <password>"
+  message-conf: "&cRegistrati con /register <password> <confermaPassword>"
+  disabled: "&cLa registrazione è disabilitata in questo server"
+  command: "&cUso: /register <password>"
+  command-conf: "&cUso: /register <password> <confermaPassword>"
+  register-success: "&aOra sei registrato!"
+  register-timeout: "&cTempo di registrazione scaduto"
+  already-registered: "&aSei già registrato"
+changepassword:
+  disabled: "&cIl cambio password è disabilitato in questo server"
+  login-required: "&cDevi essere autenticato per cambiare la password"
+  command: "&cUso: /changepassword <nuovaPassword>"
+  command-conf: "&cUso: /changepassword <nuovaPassword> <confermaPassword>"
+  command-cons: "&cUso: /changepassword <player> <nuovaPassword>"
+  changepassword-success: "&aPassword cambiata!"
+  changepassword-console-success: "&aLa password per l'utente &b{PLAYER} &aé stata cambiata in &b{PASSWORD}"
+logout:
+  disabled: "&cIl logout è disabilitato in questo server"
+  logout-success: "&aHai eseguito il logout"
+unregister:
+  disabled: "&cLa cancellazione dell'account è disabilitata in questo server"
+  login-required: "&cDevi essere autenticato per cancellare l'account"
+  command: "&cUso: /unregister <password>"
+  command-cons: "&cUso: /unregister <player>"
+  unregister-success: "&aIl tuo account è stato cancellato!"
+  unregister-success-3rd: "&aL'account del player è stato cancellato!"
+help:
+   1: "&b=> &aComandi disponibili &b<="
+   2: "&a/changepassword &b=>&a Cambia la password dell'account"
+   3: "&a/login &b=>&a Esegui il login"
+   4: "&a/logout &b=>&a Esegui il logout"
+   5: "&a/register &b=>&a Registra un account"
+   6: "&a/serverauth help &b=>&a Visualizza l'aiuto circa questo plugin"
+   7: "&a/serverauth info &b=>&a Visualizza le informazioni su questo plugin"
+   8: "&a/serverauth reload &b=>&a Ricarica la configurazione"
+   9: "&a/unregister &b=>&a Cancella il tuo account"
+   error: "&cSottocomando &a{SUBCMD} &cnon trovato. Usa &a/serverauth help &per visualizzare i comandi disponibili"
+errors:
+  generic: "&cSi è verificato un errore"
+  wrong-password: "&cPassword errata"
+  password-no-match: "&cLe password non corrispondono"
+  password-too-short: "&cLa password è troppo corta"
+  password-too-long: "&cLa password è troppo lunga"
+  user-not-registered: "&cNon sei registrato"
+  user-not-registered-3rd: "&cIl player non è registrato"
+  user-not-authenticated: "&cNon sei autenticato"
+  max-ip-reached: "&cHai raggiunto il numero massimo di registrazioni per IP"
+  no-permissions: "&cNon hai i permessi per usare questo comando"
+  player-only: "&cPuoi eseguire questo comando solo come player"
+...#ServerAuth plugin Dutch language file
+#Translation by Driesboy
+---
+join-message: "&bLogin systeem door &aServerAuth &bplugin"
+single-auth: "&cEr is al een speler met dit account!�
+mysql-success: "&aServerAuth is verbonden met MySQL!�
+mysql-restored: "&aMySQL verbinding vernieuwd�
+mysql-fail: "&cServerAuth kan niet verbinden met de MySQL databank. data wordt lokaal opgeslagen. fout: {MYSQL_ERROR}" 
+config-reloaded: "&aConfiguratie herladen!�
+operation-cancelled: "&cOperatie geannuleerd!�
+login:
+  message: �&Log A.U.B. in met /login <wachtwoord>"
+  disabled: "&cInloggen op deze server is uitgeschakeld�
+  command: "&cGebruik: /login <wachtwoord>"
+  ip-login: "&9Je bent nu ingelogd door je IP�
+  login-success: "&aJe bent nu ingelogd!�
+  login-timeout: "&cDe tijd om in te loggen is verstreken�
+  already-login: "&aJe bent al ingelogd�
+  too-many-attempts: "&cTe veel wachtwoorden geprobeerd!�
+register: 
+  message: "&cRegisteer je met /register <wachtwoord>"
+  message-conf: "&cregistreer je met /register <wachtwoord> <bevestigwachtwoord>"
+  disabled: "&cRegisteren op deze server is uitgeschakeld�
+  command: �&cGebruik: /register <wachtwoord>"
+  command-conf: "&cGebruik: /register <wachtwoord> <bevestigwachtwoord>"
+  register-success: "&aJe bent al geregistreerd!�
+  register-timeout: "&cDe tijd om te registreren is verstreken�
+  already-registered: "&aJe bent al geregistered�
+changepassword:
+  disabled: "&cWachtwoord veranderen is uitgeschakeld in deze server�
+  login-required: "&cOm het wachtwoord te veranderen moet je ingelogd zijn"
+  command: "&cGebruik: /changepassword <nieuwwachtwoord>"
+  command-conf: "&cGebruik: /changepassword <nieuwwachtwoord> <bevestigwachtwoord>"
+  command-cons: "&cUsage: /changepassword <player> <newPassword>"
+  changepassword-success: "&aWachtwoord veranderd!�
+  changepassword-cons-success: "&aPassword for user &b{PLAYER} &achanged to &b{PASSWORD}"
+logout:
+  disabled: "&cUitloggen is niet mogelijk op deze server�
+  logout-success: "&aJe bent al uitgelogd�
+unregister:
+  disabled: "&cRegistratie ongedaan maken is niet mogelijk op deze server�
+  login-required: "&cJe moet ingelogd zijn om je Registratie ongedaan te maken�
+  command: "&cGebruik: /unregister <wachtwoord>"
+  command-cons: "&cGebruik: /unregister <speler>"
+  unregister-success: "&aJe bent nu niet meer geregistreerde!"
+  unregister-success-3rd: "&aDe speler is nu niet meer geregistreerde!"
+help:
+   1: "&b=> &aAvailable Commands &b<="
+   2: "&a/changepassword &b=>&a Change the account password"
+   3: "&a/login &b=>&a Do login"
+   4: "&a/logout &b=>&a Do logout"
+   5: "&a/register &b=>&a Register an account"
+   6: "&a/serverauth help &b=>&a Show help about this plugin"
+   7: "&a/serverauth info &b=>&a Show info about this plugin"
+   8: "&a/serverauth reload &b=>&a Reload the config"
+   9: "&a/unregister &b=>&a Unregister your account"
+   error: "&cSubcommand &a{SUBCMD} &cnot found. Use &a/serverauth help &cto show available commands"
+errors:
+  generic: "&cEr is een fout opgetreden"
+  wrong-password: "&cVerkeerd wachtwoord�
+  password-no-match: "&cWachtwoord is niet bevestigd�
+  password-too-short: "&cWachtwoord is te kort�
+  password-too-long: "&cWachtwoord ist te lang�
+  user-not-registered: "&cJe bent niet geregistreerd�
+  user-not-registered-3rd: "&cDe speler is niet geregistreerd�
+  user-not-authenticated: "&cJe bent niet ingelogd�
+  max-ip-reached: "&cU bereikt het maximum aantal registraties per IP"
+  no-permissions: "&cYou don't have permissions to use this command"
+  player-only: "&cYou can only perform this command as a player"
+...
+#ServerAuth plugin Russian language file
+#Translation by Pub4Game
+---
+join-message: "&bНа этом сервере используется авторизация &7- &aServerAuth"
+single-auth: "&cИгрок с таким ником уже играет на сервере!"
+mysql-success: "&aServerAuth успешно подключен к базе данных MySQL!"
+mysql-restored: "&aMySQL соединение восстановлено!"
+mysql-fail: "&cServerAuth не может подключиться к базе данных MySQL. Все данные будут сохранены локально. Ошибка: {MYSQL_ERROR}" 
+config-reloaded: "&aКонфигурация плагина перезагружена!"
+operation-cancelled: "&cДействие отменено"
+login:
+  message: "&cДля авторизации на сервере /login <пароль>"
+  disabled: "&cАвторизация отключена на данном сервере"
+  command: "&cИспользуйте: /login <пароль>"
+  ip-login: "&9Вы уже вошли на сервер с данного IP"
+  login-success: "&aВы успешно вошли в свой аккаунт!"
+  login-timeout: "&cВремя ожидания авторизации закончилось"
+  already-login: "&aВы уже вошли в свой аккаунт!"
+  too-many-attempts: "&cВы делаете слишком много попыток входа!"
+register:
+  message: "&cПожалуйста, зарегистрируйтесь на сервере /register <пароль>"
+  message-conf: "&cПожалуйста, зарегистрируйтесь на сервере /register <пароль> <повтор пароля>"
+  disabled: "&cРегистрация отключена на данном сервере"
+  command: "&cИспользуйте: /register <пароль>"
+  command-conf: "&cИспользуйте: /register <пароль> <повтор пароля>"
+  register-success: "&aВы успешно зарегистрировались!"
+  register-timeout: "&cВремя ожидания регистрации закончилось"
+  already-registered: "&aВы уже зарегистрировали свой аккаунт!"
+changepassword:
+  disabled: "&cИзменение пароля отключено на данном сервере"
+  login-required: "&cПожалуйста, войдите в свой аккаунт, после чего смените пароль!"
+  command: "&cИспользуйте: /changepassword <новый пароль>"
+  command-conf: "&cИспользуйте: /changepassword <новый пароль> <повтор пароля>"
+  command-cons: "&cИспользуйте: /changepassword <игрок> <новый пароль>"
+  changepassword-success: "&aПароль был успешно изменен!"
+  changepassword-cons-success: "&aПароль игрока &b{PLAYER} &aуспешно изменен на &b{PASSWORD}"
+logout:
+  disabled: "&cВыход из аккаунта отключен на данном сервере"
+  logout-success: "&aВы успешно вышли из своего аккаунта"
+unregister:
+  disabled: "&cУдаление аккаунта отключено на сервере"
+  login-required: "&cПожалуйста, войдите в свой аккаунт, после чего повторите попытку!"
+  command: "&cИспользуйте: /unregister <пароль>"
+  command-cons: "&cИспользуйте: /unregister <ник>"
+  unregister-success: "&aВы успешно удалили свой аккаунт!"
+  unregister-success-3rd: "&aВы успешно удалили аккаунт игрока!"
+help:
+   1: "&b=> &aДоступные команды &b<="
+   2: "&a/changepassword &b=>&a Позволяет изменить пароль"
+   3: "&a/login &b=>&a Позволяет входить в аккаунт"
+   4: "&a/logout &b=>&a Позволяет выходить из аккаунта"
+   5: "&a/register &b=>&a Регистрирует аккаунт"
+   6: "&a/serverauth help &b=>&a Отображает помощь о плагине"
+   7: "&a/serverauth info &b=>&a Отображает информацию о плагине"
+   8: "&a/serverauth reload &b=>&a Перезагружает конфигурацию"
+   9: "&a/unregister &b=>&a Удаляет аккаунт"
+   error: "&cСубкоманда &a{SUBCMD} &cне найдена. Используйте &a/serverauth help &cдля просмотра доступных команд."
+errors:
+  generic: "&cПроизошла ошибка"
+  wrong-password: "&cВы ввели неверный пароль!"
+  password-no-match: "&cПароли не совпадают"
+  password-too-short: "&cВаш пароль слишком короткий!"
+  password-too-long: "&cВаш пароль слишком длинный!"
+  user-not-registered: "&cВы не зарегистрированы!"
+  user-not-registered-3rd: "&cИгрок с таким ником не зарегистрирован!"
+  user-not-authenticated: "&cВы не авторизовались!"
+  max-ip-reached: "&cВы достигли максимальное число регистраций с одного IP"
+  no-permissions: "&cУ Вас нет прав для использования этой команды"
+  player-only: "&cПожалуйста, используйте эту команду только в игре"
+...
+#ServerAuth plugin default configuration
+---
+#Keep logged in by IP
+IPLogin: false
+#Force single authentication
+force-single-auth: true
+#Allow not authenticated users to move
+allow-move: false
+#Block chat for not authenticated users
+block-chat: true
+#Block commands for not authenticated users
+block-commands: true
+#Block all events
+block-all-events: true
+#Login/Register timeout
+timeout: 60
+#Minimum password length
+minPasswordLength: 6
+#Maximum password length
+maxPasswordLength: 16
+#Password hash algorithm
+passwordHash: "sha256"
+#ServerAuth language
+language: "EN_en"
+#ServerAuth message prefix
+prefix: "&1[ServerAuth] "
+#Show join message (defined on join-message in the current language file)
+show-join-message: true
+#Use MySQL (set this to false if you want to save data in local files)
+use-mysql: false
+#MySQL settings
+mysql:
+  #MySQL host
+  host: "host"
+  #MySQL port (default 3306)
+  port: 3306
+  #MySQL username
+  username: "username"
+  #MySQL password (you can leave it blank if your database doesn't need password)
+  password: ""
+  #MySQL ServerAuth database
+  database: "serverauth"
+  #ServerAuth table prefix
+  table_prefix: "srvauth_"
+#Login settings
+login:
+  #Enable login on your server
+  enabled: true
+  #Enable failed logins kick
+  enable-failed-logins-kick: true
+  #Max number of attempts
+  max-login-attempts: 5
+  #Login message interval
+  message-interval: 4
+#Register settings
+register:
+  #Enable register on your server
+  enabled: true
+  #Require password confirmation
+  password-confirm-required: false
+  #Enable max registrations per IP
+  enable-max-ip: false
+  #Max registrations per IP
+  max-ip: 3
+  #Register message interval
+  message-interval: 4
+#Change Password settings
+changepassword:
+  #Enable changepassword on your server
+  enabled: true
+  #Require password confirmation
+  password-confirm-required: true
+#Logout settings
+logout:
+  #Enable logout on your server
+  enabled: true
+#Unregister settings
+unregister:
+  #Enable unregister on your server
+  enabled: true
+  #Require password confirmation
+  require-password: true
+...<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 12/01/2016 07:37 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Commands;
+
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\plugin\PluginBase;
+
+use ServerAuth\ServerAuth;
+use ServerAuth\Tasks\MySQLTask;
+
+class Commands extends PluginBase implements CommandExecutor {
+
+	public function __construct(ServerAuth $plugin){
+        $this->plugin = $plugin;
+    }
+    
+    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    	$fcmd = strtolower($cmd->getName());
+    	switch($fcmd){
+    		case "serverauth":
+    			if(isset($args[0])){
+    				$args[0] = strtolower($args[0]);
+    				if($args[0] == "help"){
+    					if($sender->hasPermission("serverauth.help")){
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["1"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["2"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["3"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["4"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["5"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["6"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["7"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["8"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["9"]));
+    						break;
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    						break;
+    					}
+    				}elseif($args[0]=="info"){
+    					if($sender->hasPermission("serverauth.info")){
+    						$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . "&bServerAuth &av" . ServerAuth::VERSION . " &bdeveloped by&a " . ServerAuth::PRODUCER));
+    						$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . "&bWebsite &a" . ServerAuth::MAIN_WEBSITE));
+    				        break;
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    						break;
+    					}
+    				}elseif($args[0]=="reload"){
+    					if($sender->hasPermission("serverauth.reload")){
+    						$this->plugin->reloadConfig();
+    						$this->cfg = $this->plugin->getConfig()->getAll();
+    						$this->plugin->chlang = ServerAuth::getAPI()->getConfigLanguage()->getAll();
+    						//Restart MySQL
+    						ServerAuth::getAPI()->task->cancel();
+    						$this->plugin->task = $this->plugin->getServer()->getScheduler()->scheduleRepeatingTask(new MySQLTask($this->plugin), 20);
+    						$this->plugin->mysql = false;
+    						//Check MySQL
+    						if($this->cfg["use-mysql"] == true){
+    							$check = $this->plugin->checkDatabase($this->cfg["mysql"]["host"], $this->cfg["mysql"]["port"], $this->cfg["mysql"]["username"], $this->cfg["mysql"]["password"]);
+    							if($check[0]){
+    								$this->plugin->initializeDatabase($this->cfg["mysql"]["host"], $this->cfg["mysql"]["port"], $this->cfg["mysql"]["username"], $this->cfg["mysql"]["password"], $this->cfg["mysql"]["database"], $this->cfg["mysql"]["table_prefix"]);
+    								Server::getInstance()->getLogger()->info($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["mysql-success"]));
+    								$this->mysql = true;
+    							}else{
+    								Server::getInstance()->getLogger()->info($this->plugin->translateColors("&", ServerAuth::PREFIX . ServerAuth::getAPI()->replaceArrays($this->plugin->chlang["mysql-fail"], array("MYSQL_ERROR" => $check[1]))));
+    							}
+    						}
+    						//End MySQL Restart
+    						$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["config-reloaded"]));
+    				        break;
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    						break;
+    					}
+    				}else{
+    					if($sender->hasPermission("serverauth")){
+    						$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . ServerAuth::getAPI()->replaceArrays($this->plugin->chlang["help"]["error"], array("SUBCMD" => $args[0]))));
+    						break;
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    						break;
+    					}
+    				}
+    				}else{
+    					if($sender->hasPermission("serverauth.help")){
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["1"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["2"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["3"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["4"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["5"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["6"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["7"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["8"]));
+							$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["help"]["9"]));
+    						break;
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    						break;
+    					}
+    				}
+    			}
+    	}
+}
+?>
+<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 17/01/2016 07:02 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Commands;
+
+use pocketmine\permission\Permission;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\utils\Config;
+
+use pocketmine\utils\TextFormat;
+
+use ServerAuth\ServerAuth;
+
+class Register implements CommandExecutor {
+
+	public function __construct(ServerAuth $plugin){
+        $this->plugin = $plugin;
+    }
+    
+    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    	$fcmd = strtolower($cmd->getName());
+    	switch($fcmd){
+    		case "register":
+    			if($sender->hasPermission("serverauth.register")){
+    				//Player Sender
+    				if($sender instanceof Player){
+    					$cfg = $this->plugin->getConfig()->getAll();
+    					//Check if register is enabled
+    					if($cfg["register"]["enabled"]){
+    						//Check confirm password
+    						if($cfg["register"]["password-confirm-required"]){
+    							//Check args
+    							if(count($args) == 2){
+    								if($args[0] == $args[1]){
+    									$status = ServerAuth::getAPI()->registerPlayer($sender, $args[0]);
+    									if($status == ServerAuth::SUCCESS){
+    										ServerAuth::getAPI()->authenticatePlayer($sender, $args[0]);
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["register-success"]));
+    									}elseif($status == ServerAuth::ERR_USER_ALREADY_REGISTERED){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["already-registered"]));
+    									}elseif($status == ServerAuth::ERR_PASSWORD_TOO_SHORT){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-short"]));
+    									}elseif($status == ServerAuth::ERR_PASSWORD_TOO_LONG){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-long"]));
+    									}elseif($status == ServerAuth::ERR_MAX_IP_REACHED){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["max-ip-reached"]));
+    									}elseif($status == ServerAuth::CANCELLED){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    									}else{
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    									}
+    								}else{
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-no-match"]));
+    								}
+    							}else{
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["command-conf"]));
+    							}
+    						}else{
+    							//Check args
+    							if(count($args) == 1){
+    								$status = ServerAuth::getAPI()->registerPlayer($sender, $args[0]);
+    								if($status == ServerAuth::SUCCESS){
+    									ServerAuth::getAPI()->authenticatePlayer($sender, $args[0]);
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["register-success"]));
+    								}elseif($status == ServerAuth::ERR_USER_ALREADY_REGISTERED){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["already-registered"]));
+    								}elseif($status == ServerAuth::ERR_PASSWORD_TOO_SHORT){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-short"]));
+    								}elseif($status == ServerAuth::ERR_PASSWORD_TOO_LONG){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-long"]));
+    								}elseif($status == ServerAuth::ERR_MAX_IP_REACHED){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["max-ip-reached"]));
+    								}elseif($status == ServerAuth::CANCELLED){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    								}else{
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    								}
+    							}else{
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["command"]));
+    							}
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["disabled"]));
+    					}
+    					break;
+    				}else{ //Console Sender
+    					$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["errors"]["player-only"]));
+    					break;
+    				}
+    			}else{
+    				$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    				break;
+    			}
+    			return true;
+    			}
+    	}
+}
+?><?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 15/01/2016 06:41 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Commands;
+
+use pocketmine\permission\Permission;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\utils\Config;
+
+use pocketmine\utils\TextFormat;
+
+use ServerAuth\ServerAuth;
+
+class Login implements CommandExecutor {
+
+	public function __construct(ServerAuth $plugin){
+        $this->plugin = $plugin;
+    }
+    
+public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    	$fcmd = strtolower($cmd->getName());
+    	switch($fcmd){
+    		case "login":
+    			if($sender->hasPermission("serverauth.login")){
+    				//Player Sender
+    				if($sender instanceof Player){
+    					$cfg = $this->plugin->getConfig()->getAll();
+    					//Check if login is enabled
+    					if($cfg["login"]["enabled"]){
+    						//Check args
+    						if(count($args) == 1){
+    							$status = ServerAuth::getAPI()->authenticatePlayer($sender, $args[0]);
+    							if($status == ServerAuth::SUCCESS){
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["login"]["login-success"]));
+    							}elseif($status == ServerAuth::ERR_WRONG_PASSWORD){
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["wrong-password"]));
+    							}elseif($status == ServerAuth::ERR_USER_ALREADY_AUTHENTICATED){
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["login"]["already-login"]));
+    							}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-registered"]));
+    							}elseif($status == ServerAuth::CANCELLED){
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    							}else{
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    							}
+    						}else{
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["login"]["command"]));
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["login"]["disabled"]));
+    					}
+    					break;
+    				}else{ //Console Sender
+    					$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["errors"]["player-only"]));
+    					break;
+    				}
+    			}else{
+    				$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    				break;
+    			}
+    			return true;
+    			}
+    	}
+}
+?><?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 15/01/2016 06:58 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+ 
+namespace ServerAuth\Commands;
+
+use pocketmine\permission\Permission;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\utils\Config;
+
+use pocketmine\utils\TextFormat;
+
+use ServerAuth\ServerAuth;
+
+class Logout implements CommandExecutor {
+
+	public function __construct(ServerAuth $plugin){
+        $this->plugin = $plugin;
+    }
+    
+public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    	$fcmd = strtolower($cmd->getName());
+    	switch($fcmd){
+    		case "logout":
+    			if($sender->hasPermission("serverauth.logout")){
+    				//Player Sender
+    				if($sender instanceof Player){
+    					$cfg = $this->plugin->getConfig()->getAll();
+    					//Check if logout is enabled
+    					if($cfg["logout"]["enabled"]){
+    						$status = ServerAuth::getAPI()->deauthenticatePlayer($sender);
+    						if($status == ServerAuth::SUCCESS){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["logout"]["logout-success"]));
+    						}elseif($status == ServerAuth::ERR_USER_NOT_AUTHENTICATED){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-authenticated"]));
+    						}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-registered"]));
+    						}elseif($status == ServerAuth::CANCELLED){
+    								$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    						}else{
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["logout"]["disabled"]));
+    					}
+    					break;
+    				}else{ //Console Sender
+    					$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["errors"]["player-only"]));
+    					break;
+    				}
+    			}else{
+    				$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    				break;
+    			}
+    			return true;
+    			}
+    	}
+}
+?><?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 17/01/2016 01:10 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+namespace ServerAuth\Commands;
+
+use pocketmine\permission\Permission;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\utils\Config;
+
+use pocketmine\utils\TextFormat;
+
+use ServerAuth\ServerAuth;
+
+class ChangePassword implements CommandExecutor {
+
+	public function __construct(ServerAuth $plugin){
+        $this->plugin = $plugin;
+    }
+    
+    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    	$fcmd = strtolower($cmd->getName());
+    	switch($fcmd){
+    		case "changepassword":
+    			if($sender->hasPermission("serverauth.changepassword")){
+    				$cfg = $this->plugin->getConfig()->getAll();
+    				//Player Sender
+    				if($sender instanceof Player){
+    					//Check if changepassword is enabled
+    					if($cfg["changepassword"]["enabled"]){
+    						if(ServerAuth::getAPI()->isPlayerAuthenticated($sender)){
+    							//Check confirm password
+    							if($cfg["changepassword"]["password-confirm-required"]){
+    								//Check args
+    								if(count($args) == 2){
+    									if($args[0] == $args[1]){
+    										$status = ServerAuth::getAPI()->changePlayerPassword($sender, $args[0]);
+    										if($status == ServerAuth::SUCCESS){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["changepassword-success"]));
+    										}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-registered"]));
+    										}elseif($status == ServerAuth::ERR_PASSWORD_TOO_SHORT){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-short"]));
+    										}elseif($status == ServerAuth::ERR_PASSWORD_TOO_LONG){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-long"]));
+    										}elseif($status == ServerAuth::CANCELLED){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    										}else{
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    										}
+    									}else{
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-no-match"]));
+    									}
+    								}else{
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["command-conf"]));
+    								}
+    							}else{
+    								//Check args
+    								if(count($args) == 1){
+    									$status = ServerAuth::getAPI()->changePlayerPassword($sender, $args[0]);
+    									if($status == ServerAuth::SUCCESS){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["changepassword-success"]));
+    									}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["changepassword-success"]));
+    									}elseif($status == ServerAuth::ERR_PASSWORD_TOO_SHORT){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["password-too-short"]));
+    									}elseif($status == ServerAuth::ERR_PASSWORD_TOO_LONG){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-long"]));
+    									}elseif($status == ServerAuth::CANCELLED){
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    									}else{
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    									}
+    								}else{
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["command"]));
+    								}
+    							}
+    						}else{
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["login-required"]));
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["disabled"]));
+    					}
+    					break;
+    				}else{ //Console Sender
+    					if(count($args) == 2){
+    						$status = ServerAuth::getAPI()->changePlayerPassword($this->plugin->getServer()->getOfflinePlayer($args[0]), $args[1]);
+    						if($status == ServerAuth::SUCCESS){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->replaceArrays($this->plugin->chlang["changepassword"]["changepassword-cons-success"], array("PLAYER" => $args[0], "PASSWORD" => $args[1]))));
+    						}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-registered-3rd"]));
+    						}elseif($status == ServerAuth::ERR_PASSWORD_TOO_SHORT){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-short"]));
+    						}elseif($status == ServerAuth::ERR_PASSWORD_TOO_LONG){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["password-too-long"]));
+    						}elseif($status == ServerAuth::CANCELLED){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    						}else{
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["changepassword"]["command-cons"]));
+    					}
+    					break;
+    				}
+    			}else{
+    				$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    				break;
+    			}
+    			return true;
+    			}
+    	}
+}
+?><?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 16/01/2016 08:13 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Commands;
+
+use pocketmine\permission\Permission;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\utils\Config;
+
+use pocketmine\utils\TextFormat;
+
+use ServerAuth\ServerAuth;
+
+class Unregister implements CommandExecutor {
+
+	public function __construct(ServerAuth $plugin){
+        $this->plugin = $plugin;
+    }
+    
+    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    	$fcmd = strtolower($cmd->getName());
+    	switch($fcmd){
+    		case "unregister":
+    			if($sender->hasPermission("serverauth.unregister")){
+    				//Player Sender
+    				if($sender instanceof Player){
+    					$cfg = $this->plugin->getConfig()->getAll();
+    					//Check if unregister is enabled
+    					if($cfg["unregister"]["enabled"]){
+    						if(ServerAuth::getAPI()->isPlayerAuthenticated($sender)){
+    							//Check if password is required
+    							if($cfg["unregister"]["require-password"]){
+    							    //Check args
+    								if(count($args) == 1){
+    									if(hash(ServerAuth::getAPI()->getPasswordHash(), $args[0]) == ServerAuth::getAPI()->getPlayerData($sender->getName())["password"]){
+    										$status = ServerAuth::getAPI()->unregisterPlayer($sender);
+    										if($status == ServerAuth::SUCCESS){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["unregister"]["unregister-success"]));
+    										}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-registered"]));
+    										}elseif($status == ServerAuth::CANCELLED){
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    										}else{
+    											$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    										}
+    									}else{
+    										$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["wrong-password"]));
+    									}
+    								}else{
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["unregister"]["command"]));
+    								}
+    							}else{
+    								$status = ServerAuth::getAPI()->unregisterPlayer($sender);
+    								if($status == ServerAuth::SUCCESS){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["unregister"]["unregister-success"]));
+    								}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["user-not-registered"]));
+    								}elseif($status == ServerAuth::CANCELLED){
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    								}else{
+    									$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["errors"]["generic"]));
+    								}
+    							}
+    						}else{
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["unregister"]["login-required"]));
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["unregister"]["disabled"]));
+    					}
+    					break;
+    				}else{ //Console Sender
+    					if(isset($args[0])){
+    						$player = $this->plugin->getServer()->getPlayer($args[0]);
+    						if(!$player instanceof Player){
+    							$player = $args[0];
+    						}
+    						$status = ServerAuth::getAPI()->unregisterPlayer($player);
+    						if($status == ServerAuth::SUCCESS){
+    							$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["unregister"]["unregister-success-3rd"]));
+    						}elseif($status == ServerAuth::ERR_USER_NOT_REGISTERED){
+    							$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["errors"]["user-not-registered-3rd"]));
+    						}elseif($status == ServerAuth::CANCELLED){
+    							$sender->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getCancelledMessage()));
+    						}else{
+    							$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["errors"]["generic"]));
+    						}
+    					}else{
+    						$sender->sendMessage($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["unregister"]["command-cons"]));
+    					}
+    					break;
+    				}
+    			}else{
+    				$sender->sendMessage($this->plugin->translateColors("&", $this->plugin->chlang["errors"]["no-permissions"]));
+    				break;
+    			}
+    			return true;
+    			}
+    	}
+}
+?><?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 27/01/2016 02:20 AM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth;
+
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\Listener;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\player\PlayerAchievementAwardedEvent;
+use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\event\player\PlayerCommandPreprocessEvent;
+use pocketmine\event\player\PlayerDropItemEvent;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerItemConsumeEvent;
+use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerPreLoginEvent;
+use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\Player;
+use pocketmine\Server;
+
+class EventListener implements Listener {
+	
+	public function __construct(ServerAuth $plugin){
+		$this->plugin = $plugin;
+	}
+	
+	public function onPreLogin(PlayerPreLoginEvent $event){
+		//Restore default messages
+		ServerAuth::getAPI()->enableLoginMessages(true);
+		ServerAuth::getAPI()->enableRegisterMessages(true);
+		$cfg = $this->plugin->getConfig()->getAll();
+		if($cfg['force-single-auth']){
+			$player = $event->getPlayer();
+			$count = 0;
+			foreach($this->plugin->getServer()->getOnlinePlayers() as $pl){
+				if(strtolower($pl->getName()) == strtolower($player->getName())){
+					$count++;
+				}
+			}
+			if($count > 0){
+				$player->close("", $this->plugin->translateColors("&", ServerAuth::getAPI()->getConfigLanguage()->getAll()["single-auth"]), $this->plugin->translateColors("&", ServerAuth::getAPI()->getConfigLanguage()->getAll()["single-auth"]), false);
+				$event->setCancelled(true);
+			}
+			if(ServerAuth::getAPI()->isPlayerAuthenticated($player)){
+				//IP Authentication
+				if($cfg["IPLogin"]){
+					$playerdata = ServerAuth::getAPI()->getPlayerData($player->getName());
+					if($playerdata["ip"] == $player->getAddress()){
+						ServerAuth::getAPI()->authenticatePlayer($player, $playerdata["password"], false);
+					}else{
+						ServerAuth::getAPI()->deauthenticatePlayer($event->getPlayer());
+					}
+				}else{
+					ServerAuth::getAPI()->deauthenticatePlayer($event->getPlayer());
+				}
+			}
+		}
+	}
+	
+    public function onJoin(PlayerJoinEvent $event){
+    	$player = $event->getPlayer();
+    	$cfg = $this->plugin->getConfig()->getAll();
+    	if($cfg["show-join-message"]){
+    		$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getConfigLanguage()->getAll()["join-message"]));
+    	}
+    	if(ServerAuth::getAPI()->isPlayerAuthenticated($player) && $cfg["IPLogin"]){
+    		$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getConfigLanguage()->getAll()["login"]["ip-login"]));
+    	}
+    	if(!ServerAuth::getAPI()->isPlayerRegistered($player->getName()) && ServerAuth::getAPI()->areRegisterMessagesEnabled()){
+    		if($cfg["register"]["password-confirm-required"]){
+    			$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getConfigLanguage()->getAll()["register"]["message-conf"]));
+    		}else{
+    			$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getConfigLanguage()->getAll()["register"]["message"]));
+    		}
+    	}else{
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($player) && ServerAuth::getAPI()->areLoginMessagesEnabled()){
+    			$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . ServerAuth::getAPI()->getConfigLanguage()->getAll()["login"]["message"]));
+    		}
+    	}
+    }
+    
+    public function onPlayerQuit(PlayerQuitEvent $event){
+    	//Free registered users cache
+    	if(isset($this->cached_registered_users[strtolower($event->getPlayer()->getName())])){
+    		unset($this->cached_registered_users[strtolower($event->getPlayer()->getName())]);
+    	}
+    }
+    
+    public function onPlayerMove(PlayerMoveEvent $event){
+    	if(!$this->plugin->getConfig()->getAll()["allow-move"]){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    			$event->setCancelled(true);
+    		}
+    	}
+    }
+
+    public function onPlayerChat(PlayerChatEvent $event){
+    	if($this->plugin->getConfig()->getAll()["block-chat"]){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    			$event->setCancelled(true); //Cancel message
+    		}
+    		$recipients = $event->getRecipients();
+    		foreach($recipients as $key => $recipient){
+    			if($recipient instanceof Player){
+    				if(!ServerAuth::getAPI()->isPlayerAuthenticated($recipient)){
+    					unset($recipients[$key]);
+    				}
+    			}
+    		}
+    		$event->setRecipients($recipients);
+    	}
+    }
+    
+    public function onPlayerCommand(PlayerCommandPreprocessEvent $event){
+        if($this->plugin->getConfig()->getAll()["block-commands"]){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    			$command = strtolower($event->getMessage());
+    			if($command{0} == "/"){
+    				$command = explode(" ", $command);
+    				if($command[0] != "/login" && $command[0] != "/register" && $command[0] != "/reg"){
+    					$event->setCancelled(true);
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    public function onPlayerInteract(PlayerInteractEvent $event){
+    	if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    		$event->setCancelled(true);
+    	}
+    }
+    
+    public function onEntityDamage(EntityDamageEvent $event){
+    		$player = $event->getEntity();
+    		if($player instanceof Player){
+    			if(!ServerAuth::getAPI()->isPlayerAuthenticated($player)){
+    				$event->setCancelled(true);
+    			}
+    		}
+    	if($event instanceof EntityDamageByEntityEvent){
+    		$damager = $event->getDamager();
+    		if($damager instanceof Player){
+    			if(!ServerAuth::getAPI()->isPlayerAuthenticated($damager)){
+    				$event->setCancelled(true);
+    			}
+    		}
+    	}
+    }
+    
+    //Other Events
+    
+    public function onDropItem(PlayerDropItemEvent $event){
+    	if($this->plugin->getConfig()->getAll()["block-all-events"]){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    			$event->setCancelled(true);
+    		}
+    	}
+    }
+    
+    public function onItemConsume(PlayerItemConsumeEvent $event){
+    	if($this->plugin->getConfig()->getAll()["block-all-events"]){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    			$event->setCancelled(true);
+    		}
+    	}
+    }
+    
+    public function onAwardAchievement(PlayerAchievementAwardedEvent $event){
+    	if($this->plugin->getConfig()->getAll()["block-all-events"]){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($event->getPlayer())){
+    			$event->setCancelled(true);
+    		}
+    	}
+    }
+}
+?>
+<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 17/01/2016 11:23 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Tasks;
+
+use pocketmine\scheduler\PluginTask;
+
+use ServerAuth\ServerAuth;
+
+class MessageTask extends PluginTask {
+	
+    public function __construct(ServerAuth $plugin){
+    	parent::__construct($plugin);
+        $this->plugin = $plugin;
+        $this->plugin = $this->getOwner();
+        $this->players = array();
+    }
+    
+    public function onRun($tick){
+    	$cfg = $this->plugin->getConfig()->getAll();
+    	foreach($this->plugin->getServer()->getOnlinePlayers() as $player){
+    		if(!ServerAuth::getAPI()->isPlayerAuthenticated($player)){
+    			if(!isset($this->players[strtolower($player->getName())])){
+    				$this->players[strtolower($player->getName())]["interval"] = 0;
+    				$this->players[strtolower($player->getName())]["kick"] = 0;
+    			}
+    		}
+    		if(!isset(ServerAuth::getAPI()->cached_registered_users[strtolower($player->getName())]) && isset($this->players[strtolower($player->getName())])){
+    			$this->players[strtolower($player->getName())]["interval"] += 1;
+    			$this->players[strtolower($player->getName())]["kick"] += 1;
+    			if($this->players[strtolower($player->getName())]["interval"] >= $cfg["register"]["message-interval"]){
+    				if(ServerAuth::getAPI()->areRegisterMessagesEnabled()){
+    					if($cfg["register"]["password-confirm-required"]){
+    						$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["message-conf"]));
+    					}else{
+    						$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["register"]["message"]));
+    					}
+    				}
+    				$this->players[strtolower($player->getName())]["interval"] = 0;
+    			}
+    			if($this->players[strtolower($player->getName())]["kick"] >= $cfg["timeout"]){
+    				$player->close("", $this->plugin->translateColors("&", $this->plugin->chlang["register"]["register-timeout"]));
+    				unset($this->players[strtolower($player->getName())]);
+    			}
+    		}else{
+    			if(!ServerAuth::getAPI()->isPlayerAuthenticated($player) && isset($this->players[strtolower($player->getName())])){
+    				$this->players[strtolower($player->getName())]["interval"] += 1;
+    				$this->players[strtolower($player->getName())]["kick"] += 1;
+    				if($this->players[strtolower($player->getName())]["interval"] >= $cfg["login"]["message-interval"]){
+    					if(ServerAuth::getAPI()->areLoginMessagesEnabled()){
+    						$player->sendMessage($this->plugin->translateColors("&", $cfg["prefix"] . $this->plugin->chlang["login"]["message"]));
+    					}
+    					$this->players[strtolower($player->getName())]["interval"] = 0;
+    				}
+    				if($this->players[strtolower($player->getName())]["kick"] >= $cfg["timeout"]){
+    					$player->close("", $this->plugin->translateColors("&", $this->plugin->chlang["login"]["login-timeout"]));
+    					unset($this->players[strtolower($player->getName())]);
+    				}
+    			}elseif(isset($this->players[strtolower($player->getName())])){
+    				unset($this->players[strtolower($player->getName())]);
+    			}
+    		}
+    	}
+    	foreach($this->players as $key => $player){
+    		if($this->plugin->getServer()->getPlayer($key) == null){
+    			$this->players[$key]["kick"] = 0;
+    		}
+    	}
+    }
+}
+?>
+<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 14/05/2015 05:19 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Tasks;
+
+use pocketmine\scheduler\PluginTask;
+use pocketmine\Server;
+
+use ServerAuth\ServerAuth;
+
+class MySQLTask extends PluginTask {
+	
+    public function __construct(ServerAuth $plugin){
+    	parent::__construct($plugin);
+        $this->plugin = $plugin;
+        $this->plugin = $this->getOwner();
+    }
+    
+    public function onRun($tick){
+    	$cfg = $this->plugin->getConfig()->getAll();
+    	//Check MySQL
+    	if($cfg["use-mysql"] == true){
+    		if(ServerAuth::getAPI()->getDatabase() == false){
+    			$check = ServerAuth::getAPI()->checkDatabase($cfg["mysql"]["host"], $cfg["mysql"]["port"], $cfg["mysql"]["username"], $cfg["mysql"]["password"]);
+    			if($check[0]){
+    				Server::getInstance()->getLogger()->info($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["mysql-restored"]));
+    				ServerAuth::getAPI()->initializeDatabase($cfg["mysql"]["host"], $cfg["mysql"]["port"], $cfg["mysql"]["username"], $cfg["mysql"]["password"], $cfg["mysql"]["database"], $cfg["mysql"]["table_prefix"]);
+    				ServerAuth::getAPI()->mysql = true;
+    			}
+    		}elseif(!ServerAuth::getAPI()->getDatabase()->ping()){
+    			$check = ServerAuth::getAPI()->checkDatabase($cfg["mysql"]["host"], $cfg["mysql"]["port"], $cfg["mysql"]["username"], $cfg["mysql"]["password"]);
+    			if($check[0]){
+    				Server::getInstance()->getLogger()->info($this->plugin->translateColors("&", ServerAuth::PREFIX . $this->plugin->chlang["mysql-restored"]));
+    				ServerAuth::getAPI()->initializeDatabase($cfg["mysql"]["host"], $cfg["mysql"]["port"], $cfg["mysql"]["username"], $cfg["mysql"]["password"], $cfg["mysql"]["database"], $cfg["mysql"]["table_prefix"]);
+    				ServerAuth::getAPI()->mysql = true;
+    			}
+    		}
+    	}else{
+    		ServerAuth::getAPI()->mysql = false;
+    	}
+    }
+}
+?>
+<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 10/05/2015 02:17 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Events;
+
+use pocketmine\event\plugin\PluginEvent;
+use pocketmine\Player;
+use pocketmine\event\Cancellable;
+
+use ServerAuth\ServerAuth;
+
+class ServerAuthAuthenticateEvent extends PluginEvent implements Cancellable {
+
+	public static $handlerList = null;
+
+	/** @var Player $player */
+	private $player;
+
+	/**
+	 * @param Player $player
+	 */
+	public function __construct(Player $player){
+		$this->player = $player;
+	}
+
+	/**
+	 * Get event player
+	 *
+	 * @return Player
+	 */
+	public function getPlayer(){
+		return $this->player;
+	}
+	
+	/**
+	 * Set cancelled message
+	 * 
+	 * @param string $message
+	 */
+	public function setCancelledMessage($message){
+		ServerAuth::getAPI()->canc_message = $message;
+	}
+}
+<?php
+
+/*
+ * ServerAuth (v2.13) by EvolSoft
+ * Developer: EvolSoft (Flavius12)
+ * Website: http://www.evolsoft.tk
+ * Date: 16/01/2016 01:57 PM (UTC)
+ * Copyright & License: (C) 2015-2016 EvolSoft
+ * Licensed under MIT (https://github.com/EvolSoft/ServerAuth/blob/master/LICENSE)
+ */
+
+namespace ServerAuth\Events;
+
+use pocketmine\event\plugin\PluginEvent;
+use pocketmine\Player;
+use pocketmine\event\Cancellable;
+
+use ServerAuth\ServerAuth;
+
+class ServerAuthRegisterEvent extends PluginEvent implements Cancellable {
+
+	public static $handlerList = null;
+
+	/** @var Player $player */
+	private $player;
+	
+	/** @var $password */
+	private $password;
+
+	/**
+	 * @param Player $player
+	 * @param $password
+	 */
+	public function __construct(Player $player, $password){
+		$this->player = $player;
+		$this->password = $password;
+	}
+
+	/**
+	 * Get event player
+	 *
+	 * @return Player
+	 */
+	public function getPlayer(){
+		return $this->player;
+	}
+	
+	/**
+	 * Get password (it can be hashed or not)
+	 * 
+	 * @return $password
+	 */
+	public function getPassword(){
+		return $this->password;
+	}
+	
+	/**
+	 * Set cancelled message
+	 *
+	 * @param string $message
+	 */
+	public function setCancelledMessage($message){
+		ServerAuth::getAPI()->canc_message = $message;
+	}
+}

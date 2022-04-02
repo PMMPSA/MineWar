@@ -1,0 +1,114 @@
+GenisysPro Crash Dump Thu Aug 15 06:37:34 UTC 2019
+
+Error: Declaration of MyPlot\MyPlotGenerator::generateChunk(int $chunkX, int $chunkZ) must be compatible with pocketmine\level\generator\Generator::generateChunk($chunkX, $chunkZ)
+File: /MyPlot.phar/src/MyPlot/MyPlotGenerator
+Line: 190
+Type: E_COMPILE_ERROR
+
+THIS CRASH WAS CAUSED BY A PLUGIN
+BAD PLUGIN : MyPlot v1.1.7-pre
+
+Code:
+[181] 	 */
+[182] 	public function populateChunk(int $chunkX, int $chunkZ) {}
+[183] 
+[184] 	/**
+[185] 	 * @return Vector3
+[186] 	 */
+[187] 	public function getSpawn() : Vector3 {
+[188] 		return new Vector3(0, $this->groundHeight+1, 0);
+[189] 	}
+[190] }
+[191] 
+[192] 
+[193] 
+[194] 
+[195] 
+[196] 
+[197] 
+[198] 
+[199] 
+[200] 
+
+Backtrace:
+#0 (): pocketmine\Server->crashDump(boolean)
+
+GenisysPro version: 3a9cc40f42d9b6fa06f42a92bc9fbdd7be3bddf1 [Protocol 113; API 3.0.1]
+uname -a: Linux localhost 4.4.22+ #4 SMP PREEMPT Tue Jun 4 01:54:01 CST 2019 aarch64
+PHP version: 7.0.3
+Zend version: 3.0.0
+OS : Linux, android
+
+Server uptime: 7 seconds
+Number of loaded worlds: 0
+Players online: 0/40
+
+Loaded plugins:
+LevelToMine 0.1 by AmGM-Encode for API(s) 3.0.0, 2.0.0
+ChatLogin 1 by BulutMCPE,FleetHD for API(s) 1.14.0
+ServerAuth 2.13 by EvolSoft for API(s) 1.11.0
+MagicTelePortal 1.3.2 by aliuly for API(s) 1.10.0
+ManyWorlds 2.0.3 by aliuly for API(s) 2.0.0, 1.13.0
+OreGen 1.1.4 by Xenophilicy for API(s) 3.0.0
+RandomBlock 2.0.0 by Edit By Nờ Cờ Dờ for API(s) 3.0.0
+KeepInventory 1.0 by KhoaGamingPro for API(s) 3.0.0
+SignPortal 1.1.2 by 99leonchang for API(s) 1.3.1
+EconomyAPI 2.0.9 by onebone for API(s) 2.0.0
+EconomyPShop 2.0.2 by onebone for API(s) 1.12.0
+EconomySell 2.0.7 by onebone for API(s) 1.12.0
+EconomyShop 2.0.7 by onebone for API(s) 1.12.0
+EssentialsPE 1.1.3.vgphp7 by LegendsOfMCPE Team for API(s) 1.13.0
+VoteReward 3 by LDX for API(s) 1.12.0, 2.0.0
+WorldProtect 2.2.0 by aliuly for API(s) 1.10.0, 1.12.0
+SClearLagg 1 by Sergey_Dertan for API(s) 1.8.0
+MSpawns 1.5 by EvolSoft for API(s) 1.11.0
+Trade 1 by Minuha for API(s) 2.0.0, 3.0.0
+iSoftCrates 0.1 by Az928 for API(s) 3.0.0, 2.1.0
+IFloatingText 1.1.3 by ibook for API(s) 2.0.0, 3.0.0, 3.0.0 Alpha 6, 3.0.0 Alpha 7
+DailyReward 1.3 by MrDoni98 for API(s) 3.0.0, 3.0.0-ALPHA6
+Titler 0.1.0 by Niekert for API(s) 3.0.0, 3.0.0-ALPHA5, 3.0.0-ALPHA6, 3.0.0-ALPHA7, 3.0.1
+TapToDo 2.2.1 by Falk for API(s) 1.0.0
+PrizeWin 1.0.6 by LilCrispy2o9/Angelo Vidrio for API(s) 1.10.0
+Quest-PMMP 1 by Gamchik for API(s) 2.0.0
+Bar 1 by Vimpavalk for API(s) 1.0.0, 2.0.0, 2.1.0, 3.0.0, 3.0.0-ALPHA1, 3.0.0-ALPHA2
+AdvancedKits 5.0b1 by luca28pet for API(s) 2.0.0
+VIPD_ARO 1.0.0 by MyL Team for API(s) 1.12.0
+NapThe 1 by  for API(s) 1.14.0
+Fly 2 by DragonPlayzMC for API(s) 2.0.0
+BuyKIT 1 by Phuongaz for API(s) 2.0.0
+FactionsPro 0.1#Beta by Array for API(s) 1.14.0, 2.0.0
+Giftcode 1.2beta1 by  for API(s) 2.0.0
+SETVIP 2.3 by MCPEVN TEAM for API(s) 3.0.0
+FaceLogin 1.0.0 by Muqsit for API(s) 2.0.0, 3.0.0, 3.0.0-ALPHA4, 3.0.0-ALPHA5, 3.0.0-ALPHA6, 3.0.0-ALPHA67
+BaoLoi_Aro 1 by PVHB for API(s) 2.0.0
+Idea_Aro 1 by PVHB for API(s) 2.0.0
+Aro_Info 0.1 by LGC for API(s) 2.0.0
+WingAngry 1.3 by vk.com/eddir for API(s) 1.0.0
+WingBubble 1.3 by vk.com/eddir for API(s) 1.0.0
+WingCritical 1.3 by vk.com/eddir for API(s) 1.0.0
+WingEnchant 1.3 by vk.com/eddir for API(s) 1.0.0
+WingFlame 1.3 by vk.com/eddir for API(s) 1.0.0
+WingFire 1.3 by vk.com/eddir for API(s) 1.0.0
+WingHappy 1.3 by vk.com/eddir for API(s) 1.0.0
+WingHeart 1.3 by vk.com/eddir for API(s) 1.0.0
+WingLavaDrip 1.3 by vk.com/eddir for API(s) 1.0.0
+WingLava 1.3 by vk.com/eddir for API(s) 1.0.0
+WingMobSpell 1.3 by vk.com/eddir for API(s) 1.0.0
+WingPortal 1.3 by vk.com/eddir for API(s) 1.0.0
+WingRain 1.3 by vk.com/eddir for API(s) 1.0.0
+WingRedstone 1.3 by vk.com/eddir for API(s) 1.0.0
+WingSmoke 1.3 by vk.com/eddir for API(s) 1.0.0
+WingSpore 1.3 by vk.com/eddir for API(s) 1.0.0
+WingWaterDrip 1.3 by vk.com/eddir for API(s) 1.0.0
+WingWater 1.3 by vk.com/eddir for API(s) 1.0.0
+Buy_Particles 1.1.0 by Anon for API(s) 2.0.0
+NoTP 1.0.0 by Ghast Noob for API(s) 2.0.0
+Buyfix 1.0.0 by Niolz Gamer for API(s) 2.0.0
+SizePLayer 1.5 by XxBoomer for API(s) 2.1.0
+BuyEnchant 1 by  for API(s) 2.0.0
+Sell 2 by Muqsit for API(s) 2.0.0
+TradeVillager 1.0.0-RELEASE by NycuRO for API(s) 3.0.0-ALPHA10
+TopIS 2 by kuraLLsz for API(s) 3.0.0-ALPHA6
+CoinsAPI 2.0.1 by KAIDOMC for API(s) 2.0.0, 3.0.0
+MyPlot 1.1.7-pre by Wiez, Exxarion, jasonwynn10 for API(s) 3.0.0-ALPHA7, 3.0.0-ALPHA8, 3.0.0-ALPHA9
+SimpleWarp 2.1.0 by Falkirks for API(s) 1.12.0

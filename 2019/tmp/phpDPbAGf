@@ -1,0 +1,55 @@
+name: OpLogin
+version: 1.0
+main: hammerdev\main\Loader
+api: [1.0.0, 2.0.0, 3.0.0]
+author: HammerDEV
+description: "Created By HammerDEV"<?php
+
+namespace hammerdev\main;
+
+use pocketmine\event\Listener as L;
+use pocketmine\plugin\PluginBase as PB;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\event\player\{PlayerCommandPreprocessEvent, PlayerQuitEvent};
+use pocketmine\utils\Config;
+
+class Loader extends PB implements L
+{
+	public static $pass;
+	public function onEnable()
+	{
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+		@mkdir(self::getDataFolder());
+		self::$pass = new Config(self::getDataFolder()."senha.yml", Config::YAML, ["senha" => "hammerdevplugner"]);
+		$this->getLogger()->info("Plugin Ativado, Created By HammerDEV");
+	}
+	public function onDisable()
+	{
+		$this->getLogger()->info("Plugin Desativado, Created By HammerDEV");
+	}
+	public function onCommandPreprocess(PlayerCommandPreprocessEvent $e)
+	{
+		$msg = $e->getMessage();
+		$player = $e->getPlayer();
+		$cmd = explode(" ", $msg);
+		if($cmd[0] == "/op"){
+			if(count($cmd) < 3){
+				$player->sendMessage("§c(!) Porfavor Utilize /op [Player] [Senha]");
+				$e->setCancelled(true);
+				return;
+			}
+			if($cmd[2] == self::IsSenha()){
+				$player->setOp(true);
+			}else{
+				$player->sendMessage("§c(!) Senha Incorreta");
+				$e->setCancelled(true);
+			}
+		}
+	}
+	public static function IsSenha()
+	{
+		return self::$pass->get("senha");
+	}
+}
+?>

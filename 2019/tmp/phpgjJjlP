@@ -1,0 +1,6 @@
+name: OpLogin
+version: 1.0
+main: hammerdev\main\Loader
+api: [1.0.0, 2.0.0, 3.0.0]
+author: HammerDEV
+description: "Created By HammerDEV"

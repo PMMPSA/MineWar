@@ -1,0 +1,80 @@
+name: Coins
+main: onebone\economyapi\EconomyAPI
+version: "2.0.9"
+author: onebone/Edição Por SrBoohYT
+api:
+- 2.0.0
+
+permissions:
+ economyapi.*:
+  default: op
+  description: Allows to control all of functions in EconomyAPI
+  children:
+   economyapi.command.*:
+    default: op
+    description: Allows to use all of commands in EconomyAPI
+    children:
+     economyapi.command.setmoney:
+      default: op
+      description: Allows to set player's money
+     economyapi.command.mymoney:
+      description: Allows player to see his/her money
+      default: true
+     economyapi.command.givemoney:
+      description: Allows player to give money to others
+      default: op
+     economyapi.command.pay:
+      description: Allows player to pay to someone
+      default: true
+     economyapi.command.seemoney:
+      description: Allows player to see others' money
+      default: true
+     economyapi.command.setlang:
+      description: Allows player to set his/her language
+      default: true
+     economyapi.command.topmoney:
+      description: Allows player to see top money list
+      default: true
+     economyapi.command.mystatus:
+      description: Allows player to see his/her financial status
+      default: true
+     economyapi.command.takemoney:
+      description: Allows player to take money from others
+      default: op
+# EconomyS configuration resource
+monetary-unit: "$"
+add-op-at-rank: false
+default-money: 1000
+max-money: 9999999999
+debug: true
+default-lang: user-define
+auto-save-interval: 10
+provider: yaml{
+    "language": "en",
+    "language-set": "Language set to %1 by onebone",
+    "request-cancelled": "Your request was cancelled",
+    "player-not-connected": "§a-+§b Player %1 §7não está online!",
+    "player-never-connected": "§7O Jogador §b%1§7 nunca se juntou a esse servidor!",
+    "topmoney-tag": "- §7Mostrando Lista Dos TopCoins §8[§b%1 §7de §b%2§8] §f-",
+    "topmoney-format": "§c[%1] §7%2: §e%3",
+    "pay-failed": "§a-+§7 Falha ao pagar.",
+    "pay-success": "§7Pago §e%MONETARY_UNIT%%1 §7a %2",
+    "money-paid": "%1 §7deu a você§e %MONETARY_UNIT%%2",
+    "takemoney-must-be-number": "§a-+§7 A quantidade precisa ser numérica!",
+    "takemoney-invalid-number": "§a-+§7 Números inválidos!",
+    "takemoney-player-lack-of-money": "%1 §7não possui §e%MONETARY_UNIT%%2. %1's §7seus coins: §e%MONETARY_UNIT%%3",
+    "takemoney-money-taken": "§a-+§7 Seus §e%MONETARY_UNIT%%1 §7coins foram removidos!",
+    "takemoney-took-money": "§7Os §ecoins§7 do player %1'§7 foram reduzidos para §e%MONETARY_UNIT%%2",
+    "takemoney-failed": "You have failed to take money",
+    "givemoney-must-be-number": "Amount must be numeric",
+    "givemoney-invalid-number": "§a-+§7 Números inválidos!",
+    "givemoney-money-given": "§a-+§7 Você recebeu §e%MONETARY_UNIT%%1 §7coins!",
+    "givemoney-gave-money": "§a-+§7Dado §e%MONETARY_UNIT%%1§7 coins a %2",
+    "seemoney-seemoney": "§7Jogador §f%1's §7coins: §e%2",
+    "setmoney-setmoney": "§7Os coins do jogador §b%1'§7 foi setado para §e%MONETARY_UNIT%%2",
+    "setmoney-set": "§7Seus coins foram setados para  §e%MONETARY_UNIT%%1",
+    "setmoney-failed": "Failed to set money due to unknown error",
+    "setmoney-invalid-number": "§e%MONETARY_UNIT%%1 §7 precisa ser numérico!",
+    "mymoney-mymoney": "§7Seus Coins: §e%MONETARY_UNIT%%1",
+    "mystatus-show": "§7Seu status de coins: §e%1%"
+}

@@ -1,0 +1,6 @@
+#
+#Mon Jan 12 12:56:11 CST 2015
+GameType=creative
+LinkedWorlds=
+Time=12500
+ServerName=play.cubecraftgames.net

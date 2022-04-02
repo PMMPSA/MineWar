@@ -1,0 +1,4 @@
+# Updated 08/15/19 09:52 by TerminatorVN 1.0.0-Special
+# victim name | ban date | banned by | banned until | reason
+
+1.52.139.159|2019-08-15 09:52:09 +0000|HieuMiner|Forever|Banned by an operator.

@@ -1,0 +1,19 @@
+---
+show-prefix: true
+show-messages-onjoin: true
+force-hub: false
+enable-hub-message: true
+hub-message: Welcome to Hub, {PLAYER}
+force-spawn: false
+teleport-on-death: 1
+enable-spawn-message: true
+spawn-message: Teleported To {WORLD} Spawn
+enable-aliases: true
+hub:
+  world: world
+  X: 127.484800
+  "Y": 5.000000
+  Z: 109.657600
+  Yaw: 89
+  Pitch: 12
+...

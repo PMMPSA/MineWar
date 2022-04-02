@@ -1,0 +1,7 @@
+#
+#Thu Feb 12 19:41:35 CET 2015
+LinkedWorlds=
+GameType=creative
+Time=0
+ServerName=lobby skywars cubecraft
+Weather=sunny

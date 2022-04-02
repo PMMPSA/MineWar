@@ -1,0 +1,11 @@
+---
+userName: LocVlogTM
+group: Guest
+permissions:
+- '*'
+- '*'
+- '*'
+- '*'
+worlds: []
+prefix: 5
+...
